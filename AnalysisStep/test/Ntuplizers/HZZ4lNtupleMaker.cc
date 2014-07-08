@@ -56,17 +56,17 @@
 #include <ZZAnalysis/AnalysisStep/interface/FinalStates.h>
 #include <ZZAnalysis/AnalysisStep/interface/MCHistoryTools.h>
 #include <ZZAnalysis/AnalysisStep/interface/PUReweight.h>
-#include <ZZAnalysis/AnalysisStep/interface/VBFCandidateJetSelector.h>
+//#include <ZZAnalysis/AnalysisStep/interface/VBFCandidateJetSelector.h>
 #include <ZZAnalysis/AnalysisStep/interface/bitops.h>
 #include <ZZAnalysis/AnalysisStep/interface/Fisher.h>
 #include "ZZ4lConfigHelper.h"
 
-#include <ZZMatrixElement/MELA/interface/Mela.h>
-#include <ZZMatrixElement/MELA/src/computeAngles.h>
+//#include <ZZMatrixElement/MELA/interface/Mela.h>
+//#include <ZZMatrixElement/MELA/src/computeAngles.h>
 
-#include <AnalysisDataFormats/CMGTools/interface/Photon.h>
-#include <AnalysisDataFormats/CMGTools/interface/PFJet.h>
-#include <AnalysisDataFormats/CMGTools/interface/BaseMET.h>
+//#include <AnalysisDataFormats/CMGTools/interface/Photon.h>
+//#include <AnalysisDataFormats/CMGTools/interface/PFJet.h>
+//#include <AnalysisDataFormats/CMGTools/interface/BaseMET.h>
 
 #include "HZZ4lNtupleFactory.h"
 
@@ -74,11 +74,13 @@
 
 #include <string>
 
+//RH
+/*
 namespace {
   bool writePhotons = false;  // Write photons in the tree. Note: must be set also in HZZ4lNtupleFactory.cc
   bool writeJets = true;     // Write jets in the tree. FIXME: make this configurable
 }
-
+*/
 
 using namespace std;
 using namespace edm;
@@ -96,8 +98,8 @@ private:
   virtual void beginJob() ;
   virtual void analyze(const edm::Event&, const edm::EventSetup&);
   virtual void FillCandidate(const pat::CompositeCandidate& higgs, bool evtPass, const edm::Event&, const Int_t CRflag);
-  virtual void FillPhoton(const cmg::Photon& photon);
-  virtual void FillJet(const cmg::PFJet& jet);
+  //  virtual void FillPhoton(const cmg::Photon& photon);//RH
+  //  virtual void FillJet(const cmg::PFJet& jet);//RH
   virtual void endJob() ;
   
   virtual void beginRun(edm::Run const&, edm::EventSetup const&);
@@ -162,7 +164,7 @@ private:
   Float_t gen_sumWeights;
 
   string sampleName;
-  Mela mela;
+  //  Mela mela; //RH
 
 };
 
@@ -171,8 +173,8 @@ private:
 //
 HZZ4lNtupleMaker::HZZ4lNtupleMaker(const edm::ParameterSet& pset) :
   myHelper(pset),
-  reweight(PUReweight::LEGACY),
-  mela((pset.getParameter<int>("setup")==2011)?7:8,pset.getParameter<double>("superMelaMass"))
+  reweight(PUReweight::LEGACY)//,
+  // mela((pset.getParameter<int>("setup")==2011)?7:8,pset.getParameter<double>("superMelaMass")) //RH
 {
   theCandLabel = pset.getUntrackedParameter<string>("CandCollection");
   theChannel = myHelper.channel();
@@ -181,7 +183,7 @@ HZZ4lNtupleMaker::HZZ4lNtupleMaker(const edm::ParameterSet& pset) :
   writeBestCandOnly = pset.getParameter<bool>("onlyBestCandidate");
   sampleName = pset.getParameter<string>("sampleName");
   
-  mela.setProcess(TVar::SelfDefine_spin0, TVar::JHUGen, TVar::ZZGG);
+  //mela.setProcess(TVar::SelfDefine_spin0, TVar::JHUGen, TVar::ZZGG);//RH
 
   if (skipEmptyEvents) {
     applyTrigger=true;
@@ -491,6 +493,8 @@ void HZZ4lNtupleMaker::analyze(const edm::Event& event, const edm::EventSetup& e
   
 
   // cmgPhotons (store them only for events with at least 1 candidate)
+  //RH
+  /*
   if (writePhotons && cands->size()!=0) {
     edm::Handle<vector<cmg::Photon> > photons;
     if (event.getByLabel("cmgPhotonSel",photons)) {
@@ -501,7 +505,6 @@ void HZZ4lNtupleMaker::analyze(const edm::Event& event, const edm::EventSetup& e
       }
     }
   }
-
 
   // cmgJets (store them only for events with at least 1 candidate)
 //   if (writeJets && cands->size()!=0) {
@@ -515,7 +518,6 @@ void HZZ4lNtupleMaker::analyze(const edm::Event& event, const edm::EventSetup& e
 //       }
 //     }
 //   }
-  
   
 
   //MET info
@@ -535,8 +537,8 @@ void HZZ4lNtupleMaker::analyze(const edm::Event& event, const edm::EventSetup& e
   if(pfmetcoll.isValid()){
     pfmet = pfmetcoll->front().pt();
   }
-
-
+*/
+  float pfmet = -1;//RHinsert
   //Save general event info in the tree. This must be done after the loop on the candidates so that we know the best candidate position in the list
   myTree->FillEventInfo(event.id().run(), event.id().event(), event.luminosityBlock(), NbestCand, vertexs->size(), nObsInt, nTrueInt, weight2, pfmet, genFinalState, genProcessId, genHEPMCweight, trigWord, genExtInfo);
 
@@ -544,7 +546,8 @@ void HZZ4lNtupleMaker::analyze(const edm::Event& event, const edm::EventSetup& e
 
   return;
 }
-
+//RH
+/*
 void HZZ4lNtupleMaker::FillPhoton(const cmg::Photon& photon)
 {
   const Float_t photPt  = photon.pt();
@@ -570,7 +573,7 @@ void HZZ4lNtupleMaker::FillJet(const cmg::PFJet& jet)
 
   return;
 }
-
+*/
 
 
 
@@ -610,8 +613,8 @@ void HZZ4lNtupleMaker::FillCandidate(const pat::CompositeCandidate& cand, bool e
   //const Float_t ZZMEKDgravLD = cand.userFloat("MEKD_GravLD");
 
   Float_t ZZFisher = cand.userFloat("VD");
-  Float_t Mjj  = cand.userFloat("mjj");
-  Float_t detajj   = cand.userFloat("detajj");
+  //  Float_t Mjj  = cand.userFloat("mjj");//RH
+  //  Float_t detajj   = cand.userFloat("detajj");//RH
 
   //const Float_t p0plus_melaNorm = cand.userFloat("p0plus_melaNorm");
   //const Float_t p0plus_mela = cand.userFloat("p0plus_mela");
@@ -954,14 +957,17 @@ void HZZ4lNtupleMaker::FillCandidate(const pat::CompositeCandidate& cand, bool e
 			    combRelIsoPF[i]);
   }
 
+  //RH
+  /*
   if (writeJets){
     // Jet collection (preselected with pT>10)
     Handle<edm::View<cmg::PFJet> > pfjetscoll;
     event.getByLabel("cmgPFJetSel", pfjetscoll);
-
+    
     VBFCandidateJetSelector myVBFCandidateJetSelector; 
     std::vector<const cmg::PFJet*> cleanedJets; 
     cleanedJets = myVBFCandidateJetSelector.cleanJets(cand,pfjetscoll,myHelper.setup()); 
+    
     // Note that jets variables are filled for jets above 20 GeV, to allow JES studies.
     // ZZFisher is now filled only for true dijet events (jets above 30 GeV)    
     if(cleanedJets.size()>1 && theChannel!=ZL){ 
@@ -994,7 +1000,7 @@ void HZZ4lNtupleMaker::FillCandidate(const pat::CompositeCandidate& cand, bool e
       }
     }  
   }
-  
+  */
   //convention: 0 -> 4mu   1 -> 4e   2 -> 2mu2e
   myTree->FillHInfo(ZZMass, ZZMassErr, ZZMassErrCorr, ZZMassPreFSR, ZZMassRefit, Chi2KinFit, ZZMassCFit, Chi2CFit,  sel, ZZPt, ZZEta, ZZPhi,
 		    isSignal, isRightPair, ZZFisher, CRflag);

@@ -1,5 +1,5 @@
 #include "ZZAnalysis/AnalysisStep/interface/CompositeCandMassResolution.h"
-#include <ZZAnalysis/AnalysisStep/interface/PhotonFwd.h>
+//#include <ZZAnalysis/AnalysisStep/interface/PhotonFwd.h>
 
 #include <cmath>
 #include "DataFormats/Candidate/interface/Candidate.h"

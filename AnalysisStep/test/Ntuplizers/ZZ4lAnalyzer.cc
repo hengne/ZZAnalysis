@@ -26,8 +26,8 @@
 #include <DataFormats/JetReco/interface/PFJet.h>
 #include <DataFormats/METReco/interface/PFMETCollection.h>
 #include <DataFormats/JetReco/interface/PFJetCollection.h>
-#include <AnalysisDataFormats/CMGTools/interface/BaseMET.h>
-#include <AnalysisDataFormats/CMGTools/interface/PFJet.h>
+//#include <AnalysisDataFormats/CMGTools/interface/BaseMET.h>
+//#include <AnalysisDataFormats/CMGTools/interface/PFJet.h>
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include <FWCore/ParameterSet/interface/FileInPath.h>
 
@@ -39,7 +39,7 @@
 #include <ZZAnalysis/AnalysisStep/interface/FinalStates.h>
 #include <ZZAnalysis/AnalysisStep/interface/MCHistoryTools.h>
 #include <ZZAnalysis/AnalysisStep/interface/PUReweight.h>
-#include <ZZAnalysis/AnalysisStep/interface/VBFCandidateJetSelector.h>
+//#include <ZZAnalysis/AnalysisStep/interface/VBFCandidateJetSelector.h>
 #include <ZZAnalysis/AnalysisStep/interface/Fisher.h>
 #include "ZZ4lConfigHelper.h"
 #include <boost/lexical_cast.hpp>
@@ -488,6 +488,9 @@ void ZZ4lAnalyzer::analyze(const Event & event, const EventSetup& eventSetup){
 //     pfmet = pfmetObj->pt();
 //   }
   
+
+//RH
+/*
   //MET
   Handle<vector<cmg::BaseMET> > pfmetcoll;
   event.getByLabel("cmgPFMET", pfmetcoll);
@@ -498,7 +501,7 @@ void ZZ4lAnalyzer::analyze(const Event & event, const EventSetup& eventSetup){
   // Jet collection (preselected with pT>10)
   Handle<edm::View<cmg::PFJet> > pfjetscoll;
   event.getByLabel("cmgPFJetSel", pfjetscoll);
-
+*/
   // Apply MC filter (skip event)
   if (isMC && !(myHelper.passMCFilter(event))) return;
 
@@ -711,6 +714,8 @@ void ZZ4lAnalyzer::analyze(const Event & event, const EventSetup& eventSetup){
     float j1pT =-1.;
     float j2pT =-1.;
     int nJet30 = -1;
+    //RH
+    /*
     VBFCandidateJetSelector myVBFCandidateJetSelector;
 
     // Pick jets, since they are not associated to the candidate yet
@@ -741,7 +746,7 @@ void ZZ4lAnalyzer::analyze(const Event & event, const EventSetup& eventSetup){
 	cout << "ERROR: ZZ4lAnalyzer: " << VD_chk << " " << VD << " " <<  deta_chk << " " <<  deta << " " << mjj_chk << " " << mjj << endl;
       }
     }
-	  
+    */	  
     //----------------------------------------------------------------------
     // count events at different steps (step plots)
     //----------------------------------------------------------------------
@@ -790,6 +795,8 @@ void ZZ4lAnalyzer::analyze(const Event & event, const EventSetup& eventSetup){
 			  sel =100; 
 		      
 			  //here include the VBF stuff
+			  //RH
+			  /*
 			  if (cleanedJetsPt30.size() > 0)
 			  {
 				 evtPass1Jet = true;
@@ -804,7 +811,7 @@ void ZZ4lAnalyzer::analyze(const Event & event, const EventSetup& eventSetup){
 					  if(VD>0.4)
 					    evtPassVBF = true;
 				  }  
-			  }
+			  }*/
 				
 			  if (passMz_zz) {
 			    evtPassM100_zz = true;

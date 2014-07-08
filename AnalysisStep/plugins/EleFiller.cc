@@ -16,9 +16,9 @@
 #include <FWCore/ParameterSet/interface/ParameterSet.h>
 #include <FWCore/Framework/interface/ESHandle.h>
 
-#include <DataFormats/PatCandidates/interface/Electron.h>
+//#include <DataFormats/PatCandidates/interface/Electron.h>
 #include <EGamma/EGammaAnalysisTools/interface/ElectronEffectiveArea.h>
-#include "DataFormats/VertexReco/interface/Vertex.h"
+//#include "DataFormats/VertexReco/interface/Vertex.h"
 
 #include <ZZAnalysis/AnalysisStep/interface/CutSet.h>
 #include <ZZAnalysis/AnalysisStep/interface/LeptonIsoHelper.h>

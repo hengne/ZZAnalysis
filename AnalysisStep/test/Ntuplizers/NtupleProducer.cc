@@ -74,9 +74,9 @@
 
 
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
-#include "AnalysisDataFormats/CMGTools/interface/Photon.h"
-#include "AnalysisDataFormats/CMGTools/interface/PFJet.h"
-#include "AnalysisDataFormats/CMGTools/interface/BaseMET.h"
+//#include "AnalysisDataFormats/CMGTools/interface/Photon.h"
+//#include "AnalysisDataFormats/CMGTools/interface/PFJet.h"
+//#include "AnalysisDataFormats/CMGTools/interface/BaseMET.h"
 #include "TrackingTools/TrajectoryParametrization/interface/GlobalTrajectoryParameters.h"
 #include "TrackingTools/TrajectoryParametrization/interface/CartesianTrajectoryError.h"
 #include "TrackingTools/AnalyticalJacobians/interface/JacobianCurvilinearToCartesian.h"
@@ -94,7 +94,7 @@
 using namespace std;
 using namespace edm;
 using namespace reco;
-using namespace cmg;
+//using namespace cmg;
 
 #include <algorithm>
 
@@ -600,15 +600,15 @@ void NtupleProducer::analyze(const Event & iEvent, const EventSetup& iSetup){
 	
 	//cout << "photon" << endl;
 	//m_photons -> Clear() ;
-	FillPhotons (iEvent, iSetup);
+	//FillPhotons (iEvent, iSetup);//RH
 	if (fill_SC){
 	//   cout << "SC" << endl;
 	FillSC(iEvent, iSetup);
 	}
 	//	cout << "jets" << endl;
-	FillJets(iEvent, iSetup);
+	//FillJets(iEvent, iSetup);//RH
 	//	cout << "met" << endl;
-	FillMET (iEvent, iSetup);
+	//FillMET (iEvent, iSetup);//RH
 	
 	if(isMC_ ) {
 	  //	cout << "truth2" << endl;
@@ -1311,7 +1311,8 @@ void NtupleProducer::FillElectrons(const edm::Event& iEvent, const edm::EventSet
 	
 }	
 
-
+//RH
+/*
 // ====================================================================================
 void NtupleProducer::FillPhotons(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 // ====================================================================================
@@ -1370,7 +1371,7 @@ void NtupleProducer::FillPhotons(const edm::Event& iEvent, const edm::EventSetup
   	
 }	
 
-
+*/
 
 // ====================================================================================
 void NtupleProducer::FillSC(const edm::Event& iEvent, const edm::EventSetup& iSetup)
@@ -1414,7 +1415,8 @@ void NtupleProducer::FillSC(const edm::Event& iEvent, const edm::EventSetup& iSe
 	if(index_sc>49) { _sc_N = 50; cout << "Number of SC>49, SC_N set to 50" << endl;}
 }	
 
-
+//RH
+/*
 // ====================================================================================
 void NtupleProducer::FillMET (const edm::Event& iEvent, const edm::EventSetup& iSetup)
 // ====================================================================================
@@ -1546,7 +1548,7 @@ void NtupleProducer::FillJets(const edm::Event& iEvent, const edm::EventSetup& i
 	if(index_pf_jets>49) { _jets_pf_N = 50; cout << "Number of pfjets>49, RECO_PFJETS_N set to 50" << endl;}
 	
 } // end of FillJets
-
+*/
 
 // ====================================================================================
 void NtupleProducer::FillTruth(const edm::Event& iEvent, const edm::EventSetup& iSetup)

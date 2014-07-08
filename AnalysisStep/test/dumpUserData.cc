@@ -17,7 +17,7 @@
 #include <DataFormats/PatCandidates/interface/CompositeCandidate.h>
 #include <DataFormats/PatCandidates/interface/Muon.h>
 #include <DataFormats/PatCandidates/interface/Electron.h>
-#include <ZZAnalysis/AnalysisStep/interface/PhotonFwd.h>
+//#include <ZZAnalysis/AnalysisStep/interface/PhotonFwd.h>
 #include <DataFormats/Common/interface/TriggerResults.h>
 #include <FWCore/Common/interface/TriggerNames.h>
 
@@ -126,15 +126,16 @@ void dumpUserData::analyze(const Event & event, const EventSetup& eventSetup){
     int i = distance(muons->begin(),lep);
     cout << " " << i << " mu"  << ((lep->charge()>0)?"+ ":"- ") << " pt= " << lep->pt() << " eta= " << lep->eta() << " phi= " << lep->phi();
     dumpUserVal(*lep);
-    if (lep->hasUserData("FSRCandidates")){
-      const PhotonPtrVector* fsrEle = lep->userData<PhotonPtrVector>("FSRCandidates");
-      if (fsrEle->size()) {
-	cout << " Photons: "; // fsrEle->size() << endl;
-	for (PhotonPtrVector::const_iterator g = fsrEle->begin(); g!=fsrEle->end(); ++g) {
-	  cout << " (pt=" << (*g)->pt() << " isFromMu=" << (*g)->isFromMuon() << ")";
-	}
-      }
-    }
+    //RH
+    // if (lep->hasUserData("FSRCandidates")){
+    //   const PhotonPtrVector* fsrEle = lep->userData<PhotonPtrVector>("FSRCandidates");
+    //   if (fsrEle->size()) {
+    // 	cout << " Photons: "; // fsrEle->size() << endl;
+    // 	for (PhotonPtrVector::const_iterator g = fsrEle->begin(); g!=fsrEle->end(); ++g) {
+    // 	  cout << " (pt=" << (*g)->pt() << " isFromMu=" << (*g)->isFromMuon() << ")";
+    // 	}
+    //   }
+    // }
     cout << endl;
   }
 
@@ -143,15 +144,16 @@ void dumpUserData::analyze(const Event & event, const EventSetup& eventSetup){
     int i = distance(electrons->begin(),lep);
     cout << " " << i << " e"  << ((lep->charge()>0)?"+  ":"-  ") << " pt= " << lep->pt() << " eta= " << lep->eta() << " phi= " << lep->phi();
     dumpUserVal(*lep);
-    if (lep->hasUserData("FSRCandidates")){
-      const PhotonPtrVector* fsrEle = lep->userData<PhotonPtrVector>("FSRCandidates");
-      if (fsrEle->size()) {
-	cout << " Photon pTs:"; // fsrEle->size() << endl;
-	for (PhotonPtrVector::const_iterator g = fsrEle->begin(); g!=fsrEle->end(); ++g) {
-	  cout << " (pt=" << (*g)->pt() << " isFromMu=" << (*g)->isFromMuon() << ")";
-	}
-      }
-    }
+    //RH
+    // if (lep->hasUserData("FSRCandidates")){
+    //   const PhotonPtrVector* fsrEle = lep->userData<PhotonPtrVector>("FSRCandidates");
+    //   if (fsrEle->size()) {
+    // 	cout << " Photon pTs:"; // fsrEle->size() << endl;
+    // 	for (PhotonPtrVector::const_iterator g = fsrEle->begin(); g!=fsrEle->end(); ++g) {
+    // 	  cout << " (pt=" << (*g)->pt() << " isFromMu=" << (*g)->isFromMuon() << ")";
+    // 	}
+    //   }
+    // }
     cout << endl;
   }
 
