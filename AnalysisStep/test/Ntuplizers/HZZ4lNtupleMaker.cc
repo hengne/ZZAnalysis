@@ -519,7 +519,7 @@ void HZZ4lNtupleMaker::analyze(const edm::Event& event, const edm::EventSetup& e
 //     }
 //   }
   
-
+*/
   //MET info
   //   Handle<reco::PFMETCollection> pfmetcoll;
   //   event.getByLabel("patMETs", pfmetcoll);
@@ -531,14 +531,14 @@ void HZZ4lNtupleMaker::analyze(const edm::Event& event, const edm::EventSetup& e
   //     //cout << pfmet << endl;
   //   }
 
-  Handle<vector<cmg::BaseMET> > pfmetcoll;
-  event.getByLabel("cmgPFMET", pfmetcoll);
+  Handle<vector<reco::MET> > pfmetcoll;
+  event.getByLabel("slimmedMETs", pfmetcoll);
   float pfmet = -1;
   if(pfmetcoll.isValid()){
     pfmet = pfmetcoll->front().pt();
   }
-*/
-  float pfmet = -1;//RHinsert
+
+  //float pfmet = -1;//RHinsert
   //Save general event info in the tree. This must be done after the loop on the candidates so that we know the best candidate position in the list
   myTree->FillEventInfo(event.id().run(), event.id().event(), event.luminosityBlock(), NbestCand, vertexs->size(), nObsInt, nTrueInt, weight2, pfmet, genFinalState, genProcessId, genHEPMCweight, trigWord, genExtInfo);
 

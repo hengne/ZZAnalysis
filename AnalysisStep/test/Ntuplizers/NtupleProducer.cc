@@ -608,7 +608,7 @@ void NtupleProducer::analyze(const Event & iEvent, const EventSetup& iSetup){
 	//	cout << "jets" << endl;
 	//FillJets(iEvent, iSetup);//RH
 	//	cout << "met" << endl;
-	//FillMET (iEvent, iSetup);//RH
+	FillMET (iEvent, iSetup);
 	
 	if(isMC_ ) {
 	  //	cout << "truth2" << endl;
@@ -1415,8 +1415,7 @@ void NtupleProducer::FillSC(const edm::Event& iEvent, const edm::EventSetup& iSe
 	if(index_sc>49) { _sc_N = 50; cout << "Number of SC>49, SC_N set to 50" << endl;}
 }	
 
-//RH
-/*
+
 // ====================================================================================
 void NtupleProducer::FillMET (const edm::Event& iEvent, const edm::EventSetup& iSetup)
 // ====================================================================================
@@ -1438,8 +1437,8 @@ void NtupleProducer::FillMET (const edm::Event& iEvent, const edm::EventSetup& i
 // 	edm::Handle< edm::View<pat::MET> > pfMEThandle;
 // 	iEvent.getByLabel("patMETs", pfMEThandle);
 	
-	edm::Handle< edm::View<cmg::BaseMET> > pfMEThandle;
-	iEvent.getByLabel("cmgPFMET", pfMEThandle);
+	edm::Handle< edm::View<reco::MET> > pfMEThandle;
+	iEvent.getByLabel("slimmedMETs", pfMEThandle);
 	
 	
 	// CALO MET
@@ -1475,8 +1474,8 @@ void NtupleProducer::FillMET (const edm::Event& iEvent, const edm::EventSetup& i
 // 	_met_pf_sig = (pfMEThandle->front() ).mEtSig();
 	
 } // end of Fill MET
-
-
+//RH
+/*
 // ====================================================================================
 void NtupleProducer::FillJets(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 // ====================================================================================

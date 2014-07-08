@@ -489,19 +489,19 @@ void ZZ4lAnalyzer::analyze(const Event & event, const EventSetup& eventSetup){
 //   }
   
 
-//RH
-/*
   //MET
-  Handle<vector<cmg::BaseMET> > pfmetcoll;
-  event.getByLabel("cmgPFMET", pfmetcoll);
+  Handle<vector<reco::MET> > pfmetcoll;
+  event.getByLabel("slimmedMETs", pfmetcoll);
   if(pfmetcoll.isValid()){
     pfmet = pfmetcoll->front().pt();
   }
 
+  //RH
+  /*
   // Jet collection (preselected with pT>10)
   Handle<edm::View<cmg::PFJet> > pfjetscoll;
   event.getByLabel("cmgPFJetSel", pfjetscoll);
-*/
+  */
   // Apply MC filter (skip event)
   if (isMC && !(myHelper.passMCFilter(event))) return;
 
