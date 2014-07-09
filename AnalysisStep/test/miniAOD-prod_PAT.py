@@ -32,7 +32,7 @@ process.maxEvents = cms.untracked.PSet(
 # Input source
 process.source = cms.Source("PoolSource",
     secondaryFileNames = cms.untracked.vstring(),
-    fileNames = cms.untracked.vstring('/store/cmst3/user/gpetrucc/miniAOD/v1/GluGluToHToZZTo4L_M-125_13TeV-powheg-pythia6_PU20bx25_PAT.root')
+    fileNames = cms.untracked.vstring('/store/cmst3/user/gpetrucc/miniAOD/v1/GluGluToHToZZTo4L_M-125_13TeV-powheg-pythia6_PU_S14_PAT.root')
 )
 
 process.options = cms.untracked.PSet(

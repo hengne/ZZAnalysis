@@ -75,7 +75,7 @@ else :
 #        process.GlobalTag.globaltag = 'FT_53_V21_AN3::All' # For 22Jan2013
         process.GlobalTag.globaltag = 'FT_53_V21_AN4::All' # For 22Jan2013, updated JEC on top of pattuples produced with FT_53_V21_AN3
 
-
+process.GlobalTag.globaltag = 'PLS170_V6AN1'
 print process.GlobalTag.globaltag
 
 ### ----------------------------------------------------------------------

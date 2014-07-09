@@ -47,7 +47,8 @@ process.source.fileNames = cms.untracked.vstring(
 #        'root://cmsphys05//data/b/botta/V5_4_0/cmgTuple_H120Fall11_noSmearing.root' #Fall11 H120 for FSR synch
 #        'root://cmsphys05//data/b/botta/V5_4_0/cmgTuple_H126Summer12.root' #Summer12 H126 for FSR synch        
 #os.environ['CMSSW_BASE'] +"../../../GluGluToHToZZTo4L_M-125_13TeV-powheg-pythia6_PU20bx25_PAT.root"
-'/store/cmst3/user/gpetrucc/miniAOD/v1/GluGluToHToGG_M-125_13TeV-powheg-pythia6_Flat20to50_PAT.root'
+#'/store/cmst3/user/gpetrucc/miniAOD/v1/GluGluToHToGG_M-125_13TeV-powheg-pythia6_Flat20to50_PAT.root'
+'/store/cmst3/user/gpetrucc/miniAOD/v1/GluGluToHToZZTo4L_M-125_13TeV-powheg-pythia6_PU_S14_PAT.root'
     )
 
 
