@@ -14,6 +14,8 @@ git clone https://github.com/scasasso/usercode/MuScleFit
 
 #MELA
 git clone https://github.com/cms-analysis/HiggsAnalysis-ZZMatrixElement.git ZZMatrixElement
+cp -r slc6_amd64_gcc472 $SCRAM_ARCH
+cd -
 #MELA dependencies
 git clone https://github.com/usarica/HiggsAnalysis-CombinedLimit HiggsAnalysis/CombinedLimit
 cd HiggsAnalysis/CombinedLimit 
