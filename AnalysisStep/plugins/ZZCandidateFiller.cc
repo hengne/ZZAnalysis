@@ -17,11 +17,11 @@
 
 #include <ZZAnalysis/AnalysisStep/interface/CutSet.h>
 #include <ZZAnalysis/AnalysisStep/interface/DaughterDataHelpers.h>
-// #include <ZZMatrixElement/MELA/interface/Mela.h>
-// #include <ZZMatrixElement/MELA/src/computeAngles.h>
-// #include <ZZMatrixElement/MEMCalculators/interface/MEMCalculators.h>
-//#include <ZZAnalysis/AnalysisStep/interface/ZZMassErrors.h>
-//#include <ZZAnalysis/AnalysisStep/interface/MCHistoryTools.h>
+#include <ZZMatrixElement/MELA/interface/Mela.h>
+#include <ZZMatrixElement/MELA/src/computeAngles.h>
+#include <ZZMatrixElement/MEMCalculators/interface/MEMCalculators.h>
+ #include <ZZAnalysis/AnalysisStep/interface/ZZMassErrors.h>
+ #include <ZZAnalysis/AnalysisStep/interface/MCHistoryTools.h>
 #include <ZZAnalysis/AnalysisStep/interface/FinalStates.h>
 #include <ZZAnalysis/AnalysisStep/interface/CompositeCandMassResolution.h>
 #include <ZZAnalysis/AnalysisStep/interface/DiLeptonKinFitter.h>
@@ -51,7 +51,7 @@
 
 bool doKinFit = false;
 bool doVtxFit = false;
-bool doMEKD = false;
+bool doMEKD = true;
 
 class ZZCandidateFiller : public edm::EDProducer {
 public:
@@ -71,9 +71,9 @@ private:
   const CutSet<pat::CompositeCandidate> cuts;
   int sampleType;
   //RH
-  // float superMelaMass;
-  //Mela mela;
-  // MEMs combinedMEM;
+  float superMelaMass;
+  Mela mela;
+  MEMs combinedMEM;
   bool embedDaughterFloats;
   bool ZRolesByMass;
   reco::CompositeCandidate::role_collection rolesZ1Z2;  
@@ -91,10 +91,10 @@ ZZCandidateFiller::ZZCandidateFiller(const edm::ParameterSet& iConfig) :
   preBestCandSelection(iConfig.getParameter<edm::ParameterSet>("bestCandAmong")),
   cuts(iConfig.getParameter<edm::ParameterSet>("flags")),
   sampleType(iConfig.getParameter<int>("sampleType")),
-  //superMelaMass(iConfig.getParameter<double>("superMelaMass")), //RH
+  superMelaMass(iConfig.getParameter<double>("superMelaMass")), //RH
   //FIXME: should use LEPTON_SETUP instead of sampleType for mela and combinedMEM. This will be an issue for samples rescaled to different sqrts (none at present)
-  //mela((sampleType==2011)?7:8,superMelaMass), //RH
-  //combinedMEM((sampleType==2011)?7.:8,superMelaMass,"CTEQ6L"), //RH
+  mela((sampleType==2011)?7:8,superMelaMass), //RH
+  combinedMEM((sampleType==2011)?7.:8,superMelaMass,"CTEQ6L"), //RH
   embedDaughterFloats(iConfig.getUntrackedParameter<bool>("embedDaughterFloats",true)),
   ZRolesByMass(iConfig.getParameter<bool>("ZRolesByMass")),
   isMC(iConfig.getParameter<bool>("isMC"))
@@ -293,7 +293,7 @@ void ZZCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
     float xi=0,xistar=0;
 
     //float ld=0, psig=0, pbkg=0;
-    //double mekd_ld=0,mekd_pseudold=0,mekd_gravld=0,mekd_A=0,mekd_B=0,mekd_AP=0,mekd_BP=0,mekd_AG=0,mekd_BG=0; //RH
+    double mekd_ld=0,mekd_pseudold=0,mekd_gravld=0,mekd_A=0,mekd_B=0,mekd_AP=0,mekd_BP=0,mekd_AG=0,mekd_BG=0; //RH
 
     std::vector<TLorentzVector> partP;
     partP.push_back(pL11);
@@ -308,7 +308,7 @@ void ZZCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
     partId.push_back(id22);
 
     ///--- compute angles
-    //mela::computeAngles(pL11,id11,pL12,id12,pL21,id21,pL22,id22,costhetastar,costheta1,costheta2,phi,phistar1); //RH
+    mela::computeAngles(pL11,id11,pL12,id12,pL21,id21,pL22,id22,costhetastar,costheta1,costheta2,phi,phistar1); //RH
   
     ///--- compute higgs azimuthal angles, xi
     TLorentzVector higgs = pL11+pL12+pL21+pL22;
@@ -323,34 +323,33 @@ void ZZCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
     // higgs.Boost(-higgs.BoostVector());
 
     //RH
-    // if(doMEKD){ 
-    //   int prodid=id11*id21*id12*id22;
-    //   if(prodid==28561 || prodid==14641 || prodid==20449){
-    // 	combinedMEM.computeKD(MEMNames::kSMHiggs,MEMNames::kqqZZ,MEMNames::kMEKD,partP,partId, mekd_ld,mekd_A,mekd_B);
-    // 	combinedMEM.computeKD(MEMNames::k0minus,MEMNames::kSMHiggs,MEMNames::kMEKD,partP,partId,mekd_pseudold,mekd_AP,mekd_BP);
-    // 	combinedMEM.computeKD(MEMNames::k2mplus_gg,MEMNames::kSMHiggs,MEMNames::kMEKD,partP,partId,mekd_gravld,mekd_AG,mekd_BG);
-    //   }else{
-    // 	mekd_ld=-1;
-    // 	mekd_pseudold=-1;
-    // 	mekd_gravld=-1;
-    //   }
-    // }
-  
+    if(doMEKD){ 
+      int prodid=id11*id21*id12*id22;
+      if(prodid==28561 || prodid==14641 || prodid==20449){
+    	combinedMEM.computeKD(MEMNames::kSMHiggs,MEMNames::kqqZZ,MEMNames::kMEKD,partP,partId, mekd_ld,mekd_A,mekd_B);
+    	combinedMEM.computeKD(MEMNames::k0minus,MEMNames::kSMHiggs,MEMNames::kMEKD,partP,partId,mekd_pseudold,mekd_AP,mekd_BP);
+    	combinedMEM.computeKD(MEMNames::k2mplus_gg,MEMNames::kSMHiggs,MEMNames::kMEKD,partP,partId,mekd_gravld,mekd_AG,mekd_BG);
+      }else{
+    	mekd_ld=-1;
+    	mekd_pseudold=-1;
+    	mekd_gravld=-1;
+      }
+    }
+    
     //--- other kinematic discriminants
-//     float m1 = Z1->mass();
-//     float m2 = Z2->mass();
-//     float mzz = myCand.mass();
-
+    //     float m1 = Z1->mass();
+    //     float m2 = Z2->mass();
+    //     float mzz = myCand.mass();
+    
     // probabilities
     //double p0plus_melaNorm,p0plus_mela,p0minus_mela,p0hplus_mela;
-    //double p0plus_VAJHU,p0minus_VAJHU,p0plus_VAMCFM,p0hplus_VAJHU; //RH
-    //double p1_mela,p1plus_mela;
-    //RH
-    /*
+    double p0plus_VAJHU,p0minus_VAJHU,p0plus_VAMCFM,p0hplus_VAJHU; //RH
+    //double p1_mela,p1plus_mela;//RH
+    
     double p1_VAJHU,p1plus_VAJHU,p2_VAJHU,p2qqb_VAJHU; 
     double bkg_VAMCFM,bkg_prodIndep_VAMCFM; //bkg_VAMCFMNorm;
     double ggzz_VAMCFM,ggzz_c1_VAMCFM,ggzz_c5_VAMCFM,ggzz_ci_VAMCFM;
-    double ggzz_p0plus_VAMCFM; */
+    double ggzz_p0plus_VAMCFM; 
     //double p2_mela, p2qqb_mela;
     //double bkg_mela;
     //float pt4l, Y4l;
@@ -358,7 +357,7 @@ void ZZCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 
     // exotic spin-2 models
     //RH
-    /*
+    
     double p2hplus_VAJHU, p2hminus_VAJHU,p2bplus_VAJHU;
     double p2hplus_qqb_VAJHU,p2hplus_prodIndep_VAJHU,p2hminus_qqb_VAJHU,p2hminus_prodIndep_VAJHU,p2bplus_qqb_VAJHU,p2bplus_prodIndep_VAJHU;
     double p2h2plus_gg_VAJHU,p2h2plus_qqbar_VAJHU,p2h2plus_prodIndep_VAJHU,	p2h3plus_gg_VAJHU ,p2h3plus_qqbar_VAJHU ,p2h3plus_prodIndep_VAJHU;
@@ -372,7 +371,7 @@ void ZZCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
     double p0plus_m4l_ScaleUp,bkg_m4l_ScaleUp,p0plus_m4l_ScaleDown,bkg_m4l_ScaleDown,p0plus_m4l_ResUp,bkg_m4l_ResUp,p0plus_m4l_ResDown,bkg_m4l_ResDown; // supermela uncertainties
     
     double p0_g1prime2_VAJHU, Dgg10_VAMCFM, pzzzg_VAJHU,pzzgg_VAJHU,p0Zgs_VAJHU,p0gsgs_VAJHU,pzzzg_PS_VAJHU,pzzgg_PS_VAJHU,p0Zgs_PS_VAJHU,p0gsgs_PS_VAJHU;
-    */
+    
     // No longer used - AJW
     //int flavor; flavor=0;
     //if(abs(id11)==abs(id21) && abs(id11)==11 )// 4e
@@ -402,8 +401,8 @@ void ZZCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
     combinedMEM.computeME(MEMNames::k2bplus,MEMNames::kAnalytical,partP,partId,p2bplus_mela);     // graviton produced by qqbar vector algebra, analytical,   
     combinedMEM.computeME(MEMNames::kqqZZ        ,MEMNames::kAnalytical,partP,partId,bkg_mela);       // background,  analytic distribution
     */
-		//RH
-		/*
+    //RH
+		
     combinedMEM.computeME(MEMNames::kSMHiggs     ,MEMNames::kJHUGen    ,partP,partId,p0plus_VAJHU);   // higgs, vector algebra, JHUgen	   
     combinedMEM.computeME(MEMNames::k0minus      ,MEMNames::kJHUGen    ,partP,partId,p0minus_VAJHU);  // pseudoscalar, vector algebra, JHUgen   
     combinedMEM.computeME(MEMNames::kSMHiggs     ,MEMNames::kMCFM      ,partP,partId,p0plus_VAMCFM);  // higgs, vector algebra, MCFM            
@@ -558,16 +557,7 @@ void ZZCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
     combinedMEM.computeME_Interference(MEMNames::kzzgg,MEMNames::kJHUGen,partP, partId,pzzgg_VAJHU);
     combinedMEM.computeME_Interference(MEMNames::kzzzg_PS,MEMNames::kJHUGen,partP, partId,pzzzg_PS_VAJHU);
     combinedMEM.computeME_Interference(MEMNames::kzzgg_PS,MEMNames::kJHUGen,partP, partId,pzzgg_PS_VAJHU);
-    // VBF jets
-    vector<const cmg::PFJet*> cleanedJets;
-    VBFCandidateJetSelector myVBFCandidateJetSelector;
-    cleanedJets = myVBFCandidateJetSelector.cleanJets(myCand,pfjetscoll,sampleType); //   //FIXME: should use LEPTON_SETUP instead of sampleType for mela and combinedMEM. This will be an issue for samples rescaled to different sqrts (none at present)
-    vector<const cmg::PFJet*> cleanedJetsPt30;
-    for (unsigned int i=0; i < cleanedJets.size(); ++i){
-      const cmg::PFJet& myjet = *(cleanedJets.at(i));  
-      if (myjet.pt()>30) cleanedJetsPt30.push_back(&myjet);
-    }
-		
+
     float detajj =-99.f;
     float mjj  =-99.f;
     float VD   =-99.f;
@@ -583,6 +573,21 @@ void ZZCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
     double pvbf_VAJHU_new_up = -1.;
     double phjj_VAJHU_new_dn = -1.;
     double pvbf_VAJHU_new_dn = -1.;
+
+
+
+    // VBF jets
+    //RH
+    /*
+    vector<const cmg::PFJet*> cleanedJets;
+    VBFCandidateJetSelector myVBFCandidateJetSelector;
+    cleanedJets = myVBFCandidateJetSelector.cleanJets(myCand,pfjetscoll,sampleType); //   //FIXME: should use LEPTON_SETUP instead of sampleType for mela and combinedMEM. This will be an issue for samples rescaled to different sqrts (none at present)
+    vector<const cmg::PFJet*> cleanedJetsPt30;
+    for (unsigned int i=0; i < cleanedJets.size(); ++i){
+      const cmg::PFJet& myjet = *(cleanedJets.at(i));  
+      if (myjet.pt()>30) cleanedJetsPt30.push_back(&myjet);
+    }
+    		
 
     if (cleanedJetsPt30.size()>=2) {
       detajj = cleanedJetsPt30[0]->eta()-cleanedJetsPt30[1]->eta();
@@ -731,8 +736,8 @@ void ZZCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 	  }
 	}
       }
-    }
-*/
+    }*/
+
     // Old-style
     float mZa = (Z1Lp->p4()+Z2Lm->p4()).mass();
     float mZb = (Z1Lm->p4()+Z2Lp->p4()).mass();
@@ -924,13 +929,13 @@ void ZZCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
     //myCand.addUserFloat("spin2PMLD",      gravld);
     //myCand.addUserFloat("PSig2PM",        psig2PM);
     //RH
-    /*
+    
     if(doMEKD){
       myCand.addUserFloat("MEKD_LD", mekd_ld);
       myCand.addUserFloat("MEKD_PseudoLD", mekd_pseudold);
       myCand.addUserFloat("MEKD_GravLD", mekd_gravld);
     }
-    */
+    
     myCand.addUserFloat("m4l",            (Z1Lm->p4()+Z1Lp->p4()+Z2Lm->p4()+Z2Lp->p4()).mass()); // mass without FSR
     if (doKinFit && abs(id11)==13 && abs(id12)==13 && abs(id21)==13 && abs(id22)==13 ) {
       myCand.addUserFloat("m4lRef",  m4lRef ); // mass from Z1 refitted (FSR not considered in the refit procedure)
@@ -959,7 +964,7 @@ void ZZCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
     */
 
     //RH
-    /*
+    
     myCand.addUserFloat("p0plus_VAJHU",   p0plus_VAJHU);   // higgs, vector algebra, JHUgen
     myCand.addUserFloat("p0minus_VAJHU",  p0minus_VAJHU);  // pseudoscalar, vector algebra, JHUgen
     myCand.addUserFloat("p0plus_VAMCFM",  p0plus_VAMCFM);  // higgs, vector algebra, MCFM
@@ -1067,7 +1072,7 @@ void ZZCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
     myCand.addUserFloat("pzzgg_PS_VAJHU",pzzgg_PS_VAJHU);
     myCand.addUserFloat("p0Zgs_PS_VAJHU",p0Zgs_PS_VAJHU);
     myCand.addUserFloat("p0gsgs_PS_VAJHU",p0gsgs_PS_VAJHU);
-*/
+
     //--- MC matching. To be revised, cf. MuFiller, EleFiller
 //     if (isMC) {
 //       int refID = 25; // FIXME: handle ZZ (sigId = 23)

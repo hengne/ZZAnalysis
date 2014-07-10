@@ -61,8 +61,8 @@
 #include <ZZAnalysis/AnalysisStep/interface/Fisher.h>
 #include "ZZ4lConfigHelper.h"
 
-//#include <ZZMatrixElement/MELA/interface/Mela.h>
-//#include <ZZMatrixElement/MELA/src/computeAngles.h>
+#include <ZZMatrixElement/MELA/interface/Mela.h>
+#include <ZZMatrixElement/MELA/src/computeAngles.h>
 
 //#include <AnalysisDataFormats/CMGTools/interface/Photon.h>
 //#include <AnalysisDataFormats/CMGTools/interface/PFJet.h>
@@ -164,7 +164,7 @@ private:
   Float_t gen_sumWeights;
 
   string sampleName;
-  //  Mela mela; //RH
+  Mela mela; //RH
 
 };
 
@@ -173,8 +173,8 @@ private:
 //
 HZZ4lNtupleMaker::HZZ4lNtupleMaker(const edm::ParameterSet& pset) :
   myHelper(pset),
-  reweight(PUReweight::LEGACY)//,
-  // mela((pset.getParameter<int>("setup")==2011)?7:8,pset.getParameter<double>("superMelaMass")) //RH
+  reweight(PUReweight::LEGACY),
+  mela((pset.getParameter<int>("setup")==2011)?7:8,pset.getParameter<double>("superMelaMass")) //RH
 {
   theCandLabel = pset.getUntrackedParameter<string>("CandCollection");
   theChannel = myHelper.channel();
@@ -183,7 +183,7 @@ HZZ4lNtupleMaker::HZZ4lNtupleMaker(const edm::ParameterSet& pset) :
   writeBestCandOnly = pset.getParameter<bool>("onlyBestCandidate");
   sampleName = pset.getParameter<string>("sampleName");
   
-  //mela.setProcess(TVar::SelfDefine_spin0, TVar::JHUGen, TVar::ZZGG);//RH
+  mela.setProcess(TVar::SelfDefine_spin0, TVar::JHUGen, TVar::ZZGG);//RH
 
   if (skipEmptyEvents) {
     applyTrigger=true;
