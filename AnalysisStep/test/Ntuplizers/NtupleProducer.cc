@@ -112,8 +112,8 @@ isMC_ (iConfig.getParameter<bool>("isMC")),
 lepton_setup(iConfig.getParameter<int>("lepton_setup")),
 
 //RhoCorrection_("kt6PFJetsForIso:rho"),//2011
-MuRhoCorrection_("kt6PFJetsCentralNeutral:rho"),//2012
-EleRhoCorrection_("kt6PFJets:rho"),//2012
+MuRhoCorrection_("kt6PFJetsCentralNeutral:rho"),//2012//RH
+EleRhoCorrection_("kt6PFJets:rho"),//2012//RH
 //SigmaRhoCorrection_("kt6PFJetsForIso:sigma"),
 PileupSrc_ ("addPileupInfo")
 { 

@@ -15,6 +15,9 @@ git clone https://github.com/scasasso/usercode/MuScleFit
 git clone https://github.com/cms-analysis/HiggsAnalysis-ZZMatrixElement.git ZZMatrixElement
 #MELA dependencies
 git clone https://github.com/usarica/HiggsAnalysis-CombinedLimit HiggsAnalysis/CombinedLimit
+cd HiggsAnalysis/CombinedLimit 
+git checkout US_slc6root53417
+cd -
 git clone https://github.com/msnowball/HCSaW Higgs/Higgs_CS_and_Width
 cd Higgs/Higgs_CS_and_Width
 git filter-branch --subdirectory-filter Higgs_CS_and_Width

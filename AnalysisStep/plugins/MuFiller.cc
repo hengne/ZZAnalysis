@@ -22,7 +22,7 @@
 
 #include <ZZAnalysis/AnalysisStep/interface/CutSet.h>
 #include <ZZAnalysis/AnalysisStep/interface/LeptonIsoHelper.h>
-#include <ZZAnalysis/AnalysisStep/interface/SIPCalculator.h>
+//#include <ZZAnalysis/AnalysisStep/interface/SIPCalculator.h>
 
 
 #include <vector>
@@ -51,7 +51,7 @@ class MuFiller : public edm::EDProducer {
   int setup;
   const StringCutObjectSelector<pat::Muon, true> cut;
   const CutSet<pat::Muon> flags;
-  SIPCalculator *sipCalculator_;
+  //SIPCalculator *sipCalculator_;
 
 };
 
@@ -63,7 +63,7 @@ MuFiller::MuFiller(const edm::ParameterSet& iConfig) :
   cut(iConfig.getParameter<std::string>("cut")),
   flags(iConfig.getParameter<edm::ParameterSet>("flags"))
 {
-  sipCalculator_ = new SIPCalculator();
+  //sipCalculator_ = new SIPCalculator();
   produces<pat::MuonCollection>();
 }
 
@@ -73,7 +73,7 @@ MuFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
 
   //Initialize SIP calculator
-  sipCalculator_->initialize(iSetup);
+  //sipCalculator_->initialize(iSetup);
 
   //--- Get leptons and rho
   edm::Handle<pat::MuonRefVector> muonHandle;
@@ -81,8 +81,9 @@ MuFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   InputTag theRhoTag = LeptonIsoHelper::getMuRhoTag(sampleType, setup);
   edm::Handle<double> rhoHandle;
-  iEvent.getByLabel(theRhoTag, rhoHandle);
-  double rho = *rhoHandle;
+  //iEvent.getByLabel(theRhoTag, rhoHandle)//RH;
+  //double rho = *rhoHandle;//RH
+  double rho = 1.;
 
   edm::Handle<vector<Vertex> >  vertexs;
   iEvent.getByLabel("goodPrimaryVertices",vertexs);
@@ -136,7 +137,7 @@ MuFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 
     //--- SIP, dxy, dz
-    float IP      = fabs(l.dB(pat::Muon::PV3D));
+    float IP      = std::abs(l.dB(pat::Muon::PV3D));
     float IPError = l.edB(pat::Muon::PV3D);
     float SIP     = IP/IPError;
 
@@ -169,9 +170,9 @@ MuFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     l.addUserFloat("rho",rho);
     l.addUserFloat("isMvaIsoRings", isMvaIsoRings);    
 
-    if(vertexs->size()>0) {
-      SIP=sipCalculator_->calculate(l,vertexs->front());
-    }
+    //    if(vertexs->size()>0) {
+    //      SIP=sipCalculator_->calculate(l,vertexs->front());
+    //    }
     l.addUserFloat("SIP",SIP);
 
     l.addUserFloat("dxy",dxy);

@@ -77,15 +77,15 @@ ZCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   Handle<View<reco::CompositeCandidate> > LLCands;
   iEvent.getByLabel(theCandidateTag, LLCands);
 
-  // Get rho, to recompute isolation for leptons with FSR
-  double rhoForMu, rhoForEle;
-  {
-    edm::Handle<double> rhoHandle;
-    iEvent.getByLabel(LeptonIsoHelper::getMuRhoTag(sampleType, setup), rhoHandle);
-    rhoForMu = *rhoHandle;
-    iEvent.getByLabel(LeptonIsoHelper::getEleRhoTag(sampleType, setup), rhoHandle);
-    rhoForEle = *rhoHandle;
-  }
+  // Get rho, to recompute isolation for leptons with FSR //RH
+  // double rhoForMu, rhoForEle;
+  // {
+  //   edm::Handle<double> rhoHandle;
+  //   iEvent.getByLabel(LeptonIsoHelper::getMuRhoTag(sampleType, setup), rhoHandle);
+  //   rhoForMu = *rhoHandle;
+  //   iEvent.getByLabel(LeptonIsoHelper::getEleRhoTag(sampleType, setup), rhoHandle);
+  //   rhoForEle = *rhoHandle;
+  // }
   
 
   //--- Fill user info
@@ -206,8 +206,12 @@ ZCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 // 	}
 //       }//RH
 
-      float rho = ((d->isMuon())?rhoForMu:rhoForEle);
-      float combRelIsoPFCorr =  LeptonIsoHelper::combRelIsoPF(sampleType, setup, rho, d, fsrCorr);
+       //float rho = ((d->isMuon())?rhoForMu:rhoForEle);//RH
+      float combRelIsoPFCorr = 0; //LeptonIsoHelper::combRelIsoPF(sampleType, setup, rho, d, fsrCorr);//RH
+      if(d->isMuon()){//Added, to be understood if it is the right recipe and what to do for ele
+	const MuonPFIsolation miso  = ((reco::Muon*)d)->pfIsolationR04();
+	combRelIsoPFCorr=fsrCorr+miso.sumChargedHadronPt+std::max(0.,miso.sumNeutralHadronEt+miso.sumPhotonEt-0.5*miso.sumPUPt)/d->pt();
+      }
       
       string base;
       stringstream str;

@@ -3,7 +3,27 @@
 ### Example analayzer
 ###
 ###----------------------------------------------------------------------
+import FWCore.ParameterSet.Config as cms
 
+LEPTON_SETUP = 2012
+
+ELECORRTYPE   = "None" # "None", "Moriond", or "Paper"
+ELEREGRESSION = "None" # "None", "Moriond", "PaperNoComb", or "Paper" 
+APPLYMUCORR = False
+
+process = cms.Process('PAT')
+
+# import of standard configurations
+process.load('Configuration.StandardSequences.Services_cff')
+process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
+process.load('FWCore.MessageService.MessageLogger_cfi')
+process.load('FastSimulation.Configuration.EventContent_cff')
+process.load('FastSimulation.PileUpProducer.PileUpSimulator_NoPileUp_cff')
+process.load('FastSimulation.Configuration.Geometries_MC_cff')
+process.load('Configuration.StandardSequences.MagneticField_38T_cff')
+process.load('Configuration.StandardSequences.PATMC_cff')
+process.load('Configuration.StandardSequences.EndOfProcess_cff')
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 try:
     IsMC

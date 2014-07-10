@@ -3,6 +3,11 @@
 ### Simple analyzer to inspect user data attached to candidates.
 ###
 ###----------------------------------------------------------------------
+LEPTON_SETUP = 2012
+PD = ""
+MCFILTER = ""
+ELECORRTYPE   = "None" # "None", "Moriond", or "Paper"
+ELEREGRESSION = "None" # "None", "Moriond", "PaperNoComb", or "Paper" 
 
 #ELECORRTYPE = "Summer12_DR53X_HCP2012"
 APPLYELEREGRESSION = False
@@ -23,7 +28,8 @@ process.source.fileNames = cms.untracked.vstring(
 #    '/store/cmst3/user/cmgtools/CMG/GluGluToHToZZTo4L_M-130_7TeV-powheg-pythia6/Fall11-PU_S6_START42_V14B-v1/AODSIM/V5/PAT_CMG_V5_2_0/cmgTuple_1.root'
 #    'root://cmsphys05//data/b/botta/V5_4_0/cmgTuple_H120Fall11_noSmearing.root' #Fall11 H120 for FSR synch
 #    'root://lxcms00//data3/2012/HZZ_cmgTuple/synchHCP1/H125_53X.root' #HCP sync file
-    'root://lxcms00//data3/2012/HZZ_cmgTuple/synchHCP1/H125_53X_pt3ele.root' #Version with looser ele pT filter
+#    'root://lxcms00//data3/2012/HZZ_cmgTuple/synchHCP1/H125_53X_pt3ele.root' #Version with looser ele pT filter
+'/store/cmst3/user/gpetrucc/miniAOD/v1/GluGluToHToZZTo4L_M-125_13TeV-powheg-pythia6_PU_S14_PAT.root'
 #    'root://lxcms00//data3/2012/HZZ_cmgTuple/synchHCP1/VBFH125_53X.root'  #HCP VBF sync file
 
     )
@@ -44,16 +50,16 @@ process.CRPath = cms.Path(process.CR)
 process.dumpUserData =  cms.EDAnalyzer("dumpUserData",                                   
 #     muonSrc = cms.InputTag("patMuonsWithTrigger"),
 #     electronSrc = cms.InputTag("patElectronsWithTrigger::PAT"),
-     muonSrc = cms.InputTag("appendPhotons:muons"),
-     electronSrc = cms.InputTag("appendPhotons:electrons"),
+     muonSrc = cms.InputTag("softMuons"),
+     electronSrc = cms.InputTag("softElectrons"),
      candidateSrcs = cms.PSet(
 #        Zmm   = cms.InputTag("MMCand"),
 #        Zee   = cms.InputTag("EECand"),
 #        Zll   = cms.InputTag("ZCand"),
 #        LL    = cms.InputTag("LLCand"),
-        MMMM  = cms.InputTag("MMMMCand"),
-        EEEE  = cms.InputTag("EEEECand"),
-        EEMM  = cms.InputTag("EEMMCand"),
+#        MMMM  = cms.InputTag("MMMMCand"),
+#        EEEE  = cms.InputTag("EEEECand"),
+#        EEMM  = cms.InputTag("EEMMCand"),
 #        ZLL   =cms.InputTag("ZLLCand"),    # Starting point for all CRs
 #        LLLL  = cms.InputTag("LLLLCand"), # For RFC studies
      )

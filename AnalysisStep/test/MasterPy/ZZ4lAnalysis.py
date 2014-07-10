@@ -45,6 +45,7 @@ try:
     APPLYMUCORR
 except NameError:
     APPLYMUCORR = True
+APPLYMUCORR = False
 
 
 #Mass used for SuperMELA
@@ -199,7 +200,8 @@ process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService
 # FIXME Add total kinematics filter for MC
 
 process.goodPrimaryVertices = cms.EDFilter("VertexSelector",
-  src = cms.InputTag("offlinePrimaryVertices"),
+  #src = cms.InputTag("offlinePrimaryVertices"),
+  src = cms.InputTag("offlineSlimmedPrimaryVertices"),
   cut = cms.string("!isFake && ndof > 4 && abs(z) <= 24 && position.Rho <= 2"),
   filter = cms.bool(True),
 )
@@ -226,7 +228,7 @@ GOODLEPTON = "userFloat('ID') && userFloat('SIP')<4" # Lepton passing ID, SIP [I
 
 # Mu e-scale corrections (MuScleFit)
 process.calibratedMuons = cms.EDProducer("MuScleFitPATMuonCorrector", 
-                         src = cms.InputTag("patMuonsWithTrigger"), 
+                         src = cms.InputTag("slimmedMuons"),#patMuonsWithTrigger"), 
                          debug = cms.bool(False), 
                          identifier = cms.string("Summer12_DR53X_smearReReco"), 
                          applySmearing = cms.bool(IsMC), 
@@ -249,12 +251,13 @@ else:
 ### Mu Ghost cleaning
 process.cleanedMu = cms.EDProducer("PATMuonCleanerBySegments",
                                    src = cms.InputTag("calibratedMuons"),
+                                   #src = cms.InputTag("slimmedMuons"),
                                    preselection = cms.string("track.isNonnull"),
                                    passthrough = cms.string("isGlobalMuon && numberOfMatches >= 2"),
                                    fractionOfSharedSegments = cms.double(0.499))
 
 if APPLYMUCORR == False :
-    process.cleanedMu.src = cms.InputTag("patMuonsWithTrigger")
+    process.cleanedMu.src = cms.InputTag("slimmedMuons")#patMuonsWithTrigger")
 
 
 
@@ -297,7 +300,7 @@ process.softMuons = cms.EDProducer("MuFiller",
 if APPLYMUCORR :
     process.muons =  cms.Sequence(process.calibratedMuons + process.cleanedMu + process.bareSoftMuons + process.softMuons)
 else:
-    process.cleanedMu.src = src = cms.InputTag("patMuonsWithTrigger")
+    process.cleanedMu.src = src = cms.InputTag("slimmedMuons")#patMuonsWithTrigger")
     process.muons =  cms.Sequence(process.cleanedMu + process.bareSoftMuons + process.softMuons)
     
 
@@ -356,7 +359,7 @@ process.electrons = cms.Sequence(process.eleRegressionEnergy + process.calibrate
 
 # Handle special cases
 if ELEREGRESSION == "None" and ELECORRTYPE == "None" :   # No correction at all. Skip correction modules.
-    process.bareSoftElectrons.src = cms.InputTag('patElectronsWithTrigger')
+    process.bareSoftElectrons.src = cms.InputTag('slimmedElectrons')#patElectronsWithTrigger')#RH
     process.electrons = cms.Sequence(process.bareSoftElectrons + process.softElectrons)
 
 elif ELEREGRESSION == "Moriond" and ELECORRTYPE == "Moriond" : # Moriond corrections: OLD ECAL regression + OLD calibration + OLD combination 
