@@ -7,6 +7,7 @@ git clone https://github.com/CJLST/ZZAnalysis.git ZZAnalysis
 cd ZZAnalysis
 git checkout giacomo_miniAOD
 cd ..
+git clone https://github.com/HZZ4l/CombinationPy.git HZZ4L_Combination/CombinationPy #find a way to remove this
 
 #MuScleFit: probably tbf
 git clone https://github.com/scasasso/usercode/MuScleFit

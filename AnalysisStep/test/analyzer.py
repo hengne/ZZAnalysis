@@ -79,7 +79,7 @@ process.source.fileNames = cms.untracked.vstring(
 #    'patTuple.*.root'
 #    )
 
-process.maxEvents.input = 10
+process.maxEvents.input = 5000
 #process.options.wantSummary = False
 
 

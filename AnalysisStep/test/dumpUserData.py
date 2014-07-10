@@ -34,7 +34,7 @@ process.source.fileNames = cms.untracked.vstring(
 
     )
  
-process.maxEvents.input = 100
+process.maxEvents.input = 5000
 # process.options.wantSummary = False
 
 
