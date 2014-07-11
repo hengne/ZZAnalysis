@@ -34,7 +34,7 @@ process.source.fileNames = cms.untracked.vstring(
 
     )
  
-process.maxEvents.input = 5000
+process.maxEvents.input = 120
 # process.options.wantSummary = False
 
 
@@ -57,7 +57,7 @@ process.dumpUserData =  cms.EDAnalyzer("dumpUserData",
 #        Zee   = cms.InputTag("EECand"),
 #        Zll   = cms.InputTag("ZCand"),
 #        LL    = cms.InputTag("LLCand"),
-#        MMMM  = cms.InputTag("MMMMCand"),
+        MMMM  = cms.InputTag("MMMMCand"),
 #        EEEE  = cms.InputTag("EEEECand"),
 #        EEMM  = cms.InputTag("EEMMCand"),
 #        ZLL   =cms.InputTag("ZLLCand"),    # Starting point for all CRs

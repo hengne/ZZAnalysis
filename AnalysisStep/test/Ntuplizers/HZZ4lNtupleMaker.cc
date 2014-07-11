@@ -1121,6 +1121,8 @@ void HZZ4lNtupleMaker::endLuminosityBlock(edm::LuminosityBlock const& iLumi, edm
     Nevt_preskim = preSkimCounter->value;
   }  
   
+  //RH
+  /*
   edm::Handle<edm::MergeableCounter> prePathCounter;
   iLumi.getByLabel("prePathCounter", prePathCounter);       // Counter of input events in the input pattuple
 
@@ -1130,7 +1132,13 @@ void HZZ4lNtupleMaker::endLuminosityBlock(edm::LuminosityBlock const& iLumi, edm
   } else {
     Nevt_Gen = Nevt_Gen + prePathCounter->value;    
   }
+  */
+  //ADDED for RH
+  if (Nevt_preskim>=0.) {
+    Nevt_Gen = Nevt_Gen + Nevt_preskim; 
+  } 
 }
+
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void HZZ4lNtupleMaker::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {

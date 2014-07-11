@@ -79,7 +79,7 @@ process.source.fileNames = cms.untracked.vstring(
 #    'patTuple.*.root'
 #    )
 
-process.maxEvents.input = 5000
+process.maxEvents.input = -1
 #process.options.wantSummary = False
 
 
@@ -299,7 +299,7 @@ process.dumpUserData =  cms.EDAnalyzer("dumpUserData",
      candidateSrcs = cms.PSet(
         Zmm   = cms.InputTag("MMCand"),
         Zee   = cms.InputTag("EECand"),
-#        Z     = cms.InputTag("ZCand"),
+        Z    = cms.InputTag("ZCand"),
         MMMM  = cms.InputTag("MMMMCand"),
         EEEE  = cms.InputTag("EEEECand"),
         EEMM  = cms.InputTag("EEMMCand"),
@@ -312,8 +312,8 @@ if (not IsMC):
     process.p = cms.EndPath( process.Plots4mu + process.Plots4e + process.Plots2e2mu + process.PlotsCRZLL )
     process.trees = cms.EndPath( process.ZZ4muTree * process.ZZ4eTree * process.ZZ2e2muTree * process.CRZLLTree + process.CRZLTree)
 else:
-    process.CRPath = cms.Path(process.CRZl) #still needed by the plotter
-    process.p = cms.EndPath( process.Plots4mu + process.Plots4e + process.Plots2e2mu)
+    #process.CRPath = cms.Path(process.CRZl) #still needed by the plotter
+    #process.p = cms.EndPath( process.Plots4mu + process.Plots4e + process.Plots2e2mu)
     process.trees = cms.EndPath( process.ZZ4muTree * process.ZZ4eTree * process.ZZ2e2muTree)
     
 
