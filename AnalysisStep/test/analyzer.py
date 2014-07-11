@@ -312,8 +312,8 @@ if (not IsMC):
     process.p = cms.EndPath( process.Plots4mu + process.Plots4e + process.Plots2e2mu + process.PlotsCRZLL )
     process.trees = cms.EndPath( process.ZZ4muTree * process.ZZ4eTree * process.ZZ2e2muTree * process.CRZLLTree + process.CRZLTree)
 else:
-    #process.CRPath = cms.Path(process.CRZl) #still needed by the plotter
-    #process.p = cms.EndPath( process.Plots4mu + process.Plots4e + process.Plots2e2mu)
+    process.CRPath = cms.Path(process.CRZl) #still needed by the plotter
+    process.p = cms.EndPath( process.Plots4mu + process.Plots4e + process.Plots2e2mu)
     process.trees = cms.EndPath( process.ZZ4muTree * process.ZZ4eTree * process.ZZ2e2muTree)
     
 

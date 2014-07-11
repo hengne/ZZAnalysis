@@ -262,7 +262,8 @@ void ZZ4lAnalyzer::endLuminosityBlock(const edm::LuminosityBlock & iLumi, const 
   if (iLumi.getByLabel("preSkimCounter", preSkimCounter)) { // Counter before skim. Does not exist for non-skimmed samples.
     Nevt_preskim = preSkimCounter->value;
   }  
-  
+  //RH
+  /*
   edm::Handle<edm::MergeableCounter> prePathCounter;
   iLumi.getByLabel("prePathCounter", prePathCounter);       // Counter of input events in the input pattuple
 
@@ -275,8 +276,10 @@ void ZZ4lAnalyzer::endLuminosityBlock(const edm::LuminosityBlock & iLumi, const 
 
   // Nevt_PAT: number of events in the pattuple
   Nevt_PAT = Nevt_PAT + prePathCounter->value;
-
-
+  *///ADDED for RH
+ if (Nevt_preskim>=0.) {
+    Nevt_Gen = Nevt_Gen + Nevt_preskim; 
+  }
   // cout << "Nevt_Gen_lumi: " << Nevt_Gen << endl;
   // cout << "Nevt_afterSkim_lumi: " << Nevt_afterSkim << endl;
   
