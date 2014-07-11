@@ -41,6 +41,7 @@
 #include <DataFormats/PatCandidates/interface/CompositeCandidate.h>
 #include <DataFormats/PatCandidates/interface/Muon.h>
 #include <DataFormats/PatCandidates/interface/Electron.h>
+#include <DataFormats/PatCandidates/interface/Jet.h>
 #include <DataFormats/METReco/interface/PFMET.h>
 #include <DataFormats/METReco/interface/PFMETCollection.h>
 #include <DataFormats/JetReco/interface/PFJet.h>
@@ -74,13 +75,12 @@
 
 #include <string>
 
-//RH
-/*
+
 namespace {
-  bool writePhotons = false;  // Write photons in the tree. Note: must be set also in HZZ4lNtupleFactory.cc
+  //bool writePhotons = false;  // Write photons in the tree. Note: must be set also in HZZ4lNtupleFactory.cc //RH
   bool writeJets = true;     // Write jets in the tree. FIXME: make this configurable
 }
-*/
+
 
 using namespace std;
 using namespace edm;
@@ -99,7 +99,7 @@ private:
   virtual void analyze(const edm::Event&, const edm::EventSetup&);
   virtual void FillCandidate(const pat::CompositeCandidate& higgs, bool evtPass, const edm::Event&, const Int_t CRflag);
   //  virtual void FillPhoton(const cmg::Photon& photon);//RH
-  //  virtual void FillJet(const cmg::PFJet& jet);//RH
+  virtual void FillJet(const pat::Jet& jet);//RH
   virtual void endJob() ;
   
   virtual void beginRun(edm::Run const&, edm::EventSetup const&);
@@ -558,22 +558,22 @@ void HZZ4lNtupleMaker::FillPhoton(const cmg::Photon& photon)
 
   return;
 }
+*/
 
-
-void HZZ4lNtupleMaker::FillJet(const cmg::PFJet& jet)
+void HZZ4lNtupleMaker::FillJet(const pat::Jet& jet)//RH
 {
   const Float_t jetPt  = jet.pt();
   const Float_t jetEta = jet.eta();
   const Float_t jetPhi = jet.phi();
   const Float_t jetMass = jet.p4().M();
   const Float_t jetBTag = jet.bDiscriminator("combinedSecondaryVertexBJetTags");
-  const Float_t jesUnc = jet.uncOnFourVectorScale();
+  const Float_t jesUnc = 0;//jet.uncOnFourVectorScale();//RH
 
   myTree->FillJetInfo(jetPt, jetEta, jetPhi, jetMass, jetBTag, jesUnc );
 
   return;
 }
-*/
+
 
 
 
@@ -613,8 +613,8 @@ void HZZ4lNtupleMaker::FillCandidate(const pat::CompositeCandidate& cand, bool e
   //const Float_t ZZMEKDgravLD = cand.userFloat("MEKD_GravLD");
 
   Float_t ZZFisher = cand.userFloat("VD");
-  //  Float_t Mjj  = cand.userFloat("mjj");//RH
-  //  Float_t detajj   = cand.userFloat("detajj");//RH
+  Float_t Mjj  = cand.userFloat("mjj");
+  Float_t detajj   = cand.userFloat("detajj");
 
   //const Float_t p0plus_melaNorm = cand.userFloat("p0plus_melaNorm");
   //const Float_t p0plus_mela = cand.userFloat("p0plus_mela");
@@ -957,22 +957,22 @@ void HZZ4lNtupleMaker::FillCandidate(const pat::CompositeCandidate& cand, bool e
 			    combRelIsoPF[i]);
   }
 
-  //RH
-  /*
+ 
   if (writeJets){
     // Jet collection (preselected with pT>10)
-    Handle<edm::View<cmg::PFJet> > pfjetscoll;
-    event.getByLabel("cmgPFJetSel", pfjetscoll);
+    Handle<edm::View<pat::Jet> > pfjetscoll;//RH
+    event.getByLabel("slimmedJets", pfjetscoll);//RH
     
-    VBFCandidateJetSelector myVBFCandidateJetSelector; 
-    std::vector<const cmg::PFJet*> cleanedJets; 
-    cleanedJets = myVBFCandidateJetSelector.cleanJets(cand,pfjetscoll,myHelper.setup()); 
-    
+    //VBFCandidateJetSelector myVBFCandidateJetSelector; //RH
+    std::vector<const pat::Jet*> cleanedJets; //RH
+    //cleanedJets = myVBFCandidateJetSelector.cleanJets(cand,pfjetscoll,myHelper.setup()); //RH
+    for(edm::View<pat::Jet>::const_iterator j = pfjetscoll->begin(); j !=pfjetscoll->end(); ++j)cleanedJets.push_back(&(*j)) ;//ADDED for RH
+
     // Note that jets variables are filled for jets above 20 GeV, to allow JES studies.
     // ZZFisher is now filled only for true dijet events (jets above 30 GeV)    
     if(cleanedJets.size()>1 && theChannel!=ZL){ 
-      const cmg::PFJet& myjet1 = *(cleanedJets.at(0)); 
-      const cmg::PFJet& myjet2 = *(cleanedJets.at(1));
+      const pat::Jet& myjet1 = *(cleanedJets.at(0)); //RH
+      const pat::Jet& myjet2 = *(cleanedJets.at(1));//RH
       math::XYZTLorentzVector jet1 = myjet1.p4();
       math::XYZTLorentzVector jet2 = myjet2.p4();
       //-FIXME check to be removed, Mjj and deta now come from candidate
@@ -985,8 +985,8 @@ void HZZ4lNtupleMaker::FillCandidate(const pat::CompositeCandidate& cand, bool e
       }
       //-FIXME
       if ( candIsBest && candPassFullSel70){ // Fill additional jet info per-event, only for the selected candidate
-	Float_t jesUnc1 = myjet1.uncOnFourVectorScale();
-	Float_t jesUnc2 = myjet2.uncOnFourVectorScale();
+	Float_t jesUnc1 = 0;//myjet1.uncOnFourVectorScale();//RH
+	Float_t jesUnc2 = 0;//myjet2.uncOnFourVectorScale();//RH
 	math::XYZTLorentzVector jetScalePlus1 = jet1*(1+jesUnc1);
 	math::XYZTLorentzVector jetScaleMinus1 = jet1*(1-jesUnc1);
 	math::XYZTLorentzVector jetScalePlus2 = jet2*(1+jesUnc2);
@@ -1000,7 +1000,7 @@ void HZZ4lNtupleMaker::FillCandidate(const pat::CompositeCandidate& cand, bool e
       }
     }  
   }
-  */
+  
   //convention: 0 -> 4mu   1 -> 4e   2 -> 2mu2e
   myTree->FillHInfo(ZZMass, ZZMassErr, ZZMassErrCorr, ZZMassPreFSR, ZZMassRefit, Chi2KinFit, ZZMassCFit, Chi2CFit,  sel, ZZPt, ZZEta, ZZPhi,
 		    isSignal, isRightPair, ZZFisher, CRflag);

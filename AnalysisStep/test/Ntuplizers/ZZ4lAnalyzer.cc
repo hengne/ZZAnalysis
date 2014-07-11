@@ -18,6 +18,7 @@
 #include <DataFormats/Candidate/interface/Candidate.h>
 #include <DataFormats/PatCandidates/interface/CompositeCandidate.h>
 #include <DataFormats/PatCandidates/interface/Muon.h>
+#include <DataFormats/PatCandidates/interface/Jet.h>
 #include <DataFormats/PatCandidates/interface/Electron.h>
 #include <DataFormats/Math/interface/LorentzVector.h>
 #include <DataFormats/VertexReco/interface/Vertex.h>
@@ -500,11 +501,12 @@ void ZZ4lAnalyzer::analyze(const Event & event, const EventSetup& eventSetup){
   }
 
   //RH
-  /*
+  
   // Jet collection (preselected with pT>10)
-  Handle<edm::View<cmg::PFJet> > pfjetscoll;
-  event.getByLabel("cmgPFJetSel", pfjetscoll);
-  */
+  //Handle<edm::View<cmg::PFJet> > pfjetscoll;
+  Handle<edm::View<pat::Jet> > pfjetscoll;
+  event.getByLabel("slimmedJets",pfjetscoll);//("cmgPFJetSel", pfjetscoll);
+  
   // Apply MC filter (skip event)
   if (isMC && !(myHelper.passMCFilter(event))) return;
 
@@ -717,19 +719,19 @@ void ZZ4lAnalyzer::analyze(const Event & event, const EventSetup& eventSetup){
     float j1pT =-1.;
     float j2pT =-1.;
     int nJet30 = -1;
-    //RH
-    /*
-    VBFCandidateJetSelector myVBFCandidateJetSelector;
+
+    //VBFCandidateJetSelector myVBFCandidateJetSelector;    //RH 
 
     // Pick jets, since they are not associated to the candidate yet
-    std::vector<const cmg::PFJet*> cleanedJets;
-    std::vector<const cmg::PFJet*> cleanedJetsPt30;
+    std::vector<const pat::Jet*> cleanedJets;
+    std::vector<const pat::Jet*> cleanedJetsPt30;
     if ( candIsBest && candPass70 ) {
-      cleanedJets = myVBFCandidateJetSelector.cleanJets(*cand,pfjetscoll,myHelper.setup()); 
-    
+      //cleanedJets = myVBFCandidateJetSelector.cleanJets(*cand,pfjetscoll,myHelper.setup()); //RH
+      for(edm::View<pat::Jet>::const_iterator j = pfjetscoll->begin(); j !=pfjetscoll->end(); ++j)cleanedJets.push_back(&(*j)) ;//ADDED for RH
+
       // Create a collection implementing the official jet selection (pt>30)
       for (unsigned int i=0; i < cleanedJets.size(); ++i){
-	const cmg::PFJet& myjet = *(cleanedJets.at(i));  
+	const pat::Jet& myjet = *(cleanedJets.at(i));  //cmg->pat for RH
 	if (myjet.pt()>30) cleanedJetsPt30.push_back(&myjet);
       }
 
@@ -749,7 +751,7 @@ void ZZ4lAnalyzer::analyze(const Event & event, const EventSetup& eventSetup){
 	cout << "ERROR: ZZ4lAnalyzer: " << VD_chk << " " << VD << " " <<  deta_chk << " " <<  deta << " " << mjj_chk << " " << mjj << endl;
       }
     }
-    */	  
+    	  
     //----------------------------------------------------------------------
     // count events at different steps (step plots)
     //----------------------------------------------------------------------
