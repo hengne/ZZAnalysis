@@ -9,6 +9,16 @@ git checkout giacomo_miniAOD
 cd ..
 git clone https://github.com/HZZ4l/CombinationPy.git HZZ4L_Combination/CombinationPy #find a way to remove this
 
+#effective areas (to be updated)
+git clone -n https://github.com/latinos/UserCode-sixie-Muon-MuonAnalysisTools Muon/MuonAnalysisTools
+cd Muon/MuonAnalysisTools
+git checkout master -- interface/MuonEffectiveArea.h
+cd -
+git clone -n https://github.com/cms-analysis/EgammaAnalysis-EectronTools EGamma/EGammaAnalysisTools
+cd EGamma/EGammaAnalysisTools
+git checkout master -- interface/ElectronEffectiveArea.h
+cd -
+
 #MuScleFit: probably tbf
 git clone https://github.com/scasasso/usercode/MuScleFit
 

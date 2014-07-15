@@ -57,7 +57,7 @@
 #include <ZZAnalysis/AnalysisStep/interface/FinalStates.h>
 #include <ZZAnalysis/AnalysisStep/interface/MCHistoryTools.h>
 #include <ZZAnalysis/AnalysisStep/interface/PUReweight.h>
-//#include <ZZAnalysis/AnalysisStep/interface/VBFCandidateJetSelector.h>
+#include <ZZAnalysis/AnalysisStep/interface/VBFCandidateJetSelector.h>
 #include <ZZAnalysis/AnalysisStep/interface/bitops.h>
 #include <ZZAnalysis/AnalysisStep/interface/Fisher.h>
 #include "ZZ4lConfigHelper.h"
@@ -963,10 +963,10 @@ void HZZ4lNtupleMaker::FillCandidate(const pat::CompositeCandidate& cand, bool e
     Handle<edm::View<pat::Jet> > pfjetscoll;//RH
     event.getByLabel("slimmedJets", pfjetscoll);//RH
     
-    //VBFCandidateJetSelector myVBFCandidateJetSelector; //RH
+    VBFCandidateJetSelector myVBFCandidateJetSelector; //RH
     std::vector<const pat::Jet*> cleanedJets; //RH
-    //cleanedJets = myVBFCandidateJetSelector.cleanJets(cand,pfjetscoll,myHelper.setup()); //RH
-    for(edm::View<pat::Jet>::const_iterator j = pfjetscoll->begin(); j !=pfjetscoll->end(); ++j)cleanedJets.push_back(&(*j)) ;//ADDED for RH
+    cleanedJets = myVBFCandidateJetSelector.cleanJets(cand,pfjetscoll,myHelper.setup()); //RH
+    //for(edm::View<pat::Jet>::const_iterator j = pfjetscoll->begin(); j !=pfjetscoll->end(); ++j)cleanedJets.push_back(&(*j)) ;//ADDED for RH
 
     // Note that jets variables are filled for jets above 20 GeV, to allow JES studies.
     // ZZFisher is now filled only for true dijet events (jets above 30 GeV)    

@@ -40,7 +40,7 @@
 #include <ZZAnalysis/AnalysisStep/interface/FinalStates.h>
 #include <ZZAnalysis/AnalysisStep/interface/MCHistoryTools.h>
 #include <ZZAnalysis/AnalysisStep/interface/PUReweight.h>
-//#include <ZZAnalysis/AnalysisStep/interface/VBFCandidateJetSelector.h>
+#include <ZZAnalysis/AnalysisStep/interface/VBFCandidateJetSelector.h>
 #include <ZZAnalysis/AnalysisStep/interface/Fisher.h>
 #include "ZZ4lConfigHelper.h"
 #include <boost/lexical_cast.hpp>
@@ -720,14 +720,14 @@ void ZZ4lAnalyzer::analyze(const Event & event, const EventSetup& eventSetup){
     float j2pT =-1.;
     int nJet30 = -1;
 
-    //VBFCandidateJetSelector myVBFCandidateJetSelector;    //RH 
+    VBFCandidateJetSelector myVBFCandidateJetSelector;    //RH 
 
     // Pick jets, since they are not associated to the candidate yet
     std::vector<const pat::Jet*> cleanedJets;
     std::vector<const pat::Jet*> cleanedJetsPt30;
     if ( candIsBest && candPass70 ) {
-      //cleanedJets = myVBFCandidateJetSelector.cleanJets(*cand,pfjetscoll,myHelper.setup()); //RH
-      for(edm::View<pat::Jet>::const_iterator j = pfjetscoll->begin(); j !=pfjetscoll->end(); ++j)cleanedJets.push_back(&(*j)) ;//ADDED for RH
+      cleanedJets = myVBFCandidateJetSelector.cleanJets(*cand,pfjetscoll,myHelper.setup()); //RH
+      //for(edm::View<pat::Jet>::const_iterator j = pfjetscoll->begin(); j !=pfjetscoll->end(); ++j)cleanedJets.push_back(&(*j)) ;//ADDED for RH
 
       // Create a collection implementing the official jet selection (pt>30)
       for (unsigned int i=0; i < cleanedJets.size(); ++i){

@@ -40,7 +40,7 @@
 
 #include <SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h>
 //#include <AnalysisDataFormats/CMGTools/interface/PFJet.h>
-//#include "ZZAnalysis/AnalysisStep/interface/VBFCandidateJetSelector.h"
+#include "ZZAnalysis/AnalysisStep/interface/VBFCandidateJetSelector.h"
 #include <ZZAnalysis/AnalysisStep/interface/Fisher.h>
 
 
@@ -346,8 +346,8 @@ void ZZCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
     
     // probabilities
     //double p0plus_melaNorm,p0plus_mela,p0minus_mela,p0hplus_mela;
-    double p0plus_VAJHU,p0minus_VAJHU,p0plus_VAMCFM,p0hplus_VAJHU; //RH
-    //double p1_mela,p1plus_mela;//RH
+    double p0plus_VAJHU,p0minus_VAJHU,p0plus_VAMCFM,p0hplus_VAJHU; 
+    //double p1_mela,p1plus_mela;
     
     double p1_VAJHU,p1plus_VAJHU,p2_VAJHU,p2qqb_VAJHU; 
     double bkg_VAMCFM,bkg_prodIndep_VAMCFM; //bkg_VAMCFMNorm;
@@ -581,14 +581,14 @@ void ZZCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetu
 
     // VBF jets
     //RH
-    //vector<const cmg::PFJet*> cleanedJets;
-    //VBFCandidateJetSelector myVBFCandidateJetSelector;
-    //cleanedJets = myVBFCandidateJetSelector.cleanJets(myCand,pfjetscoll,sampleType); //   //FIXME: should use LEPTON_SETUP instead of sampleType for mela and combinedMEM. This will be an issue for samples rescaled to different sqrts (none at present)
-    //vector<const cmg::PFJet*> cleanedJetsPt30;
-
     vector<const pat::Jet*> cleanedJets;
+    VBFCandidateJetSelector myVBFCandidateJetSelector;
+    cleanedJets = myVBFCandidateJetSelector.cleanJets(myCand,pfjetscoll,sampleType); //   //FIXME: should use LEPTON_SETUP instead of sampleType for mela and combinedMEM. This will be an issue for samples rescaled to different sqrts (none at present)
     vector<const pat::Jet*> cleanedJetsPt30;
-    for(edm::View<pat::Jet>::const_iterator j = pfjetscoll->begin(); j !=pfjetscoll->end(); ++j)cleanedJets.push_back(&(*j)) ;//ADDED for RH
+
+    //vector<const pat::Jet*> cleanedJets;
+    //vector<const pat::Jet*> cleanedJetsPt30;
+    //for(edm::View<pat::Jet>::const_iterator j = pfjetscoll->begin(); j !=pfjetscoll->end(); ++j)cleanedJets.push_back(&(*j)) ;//ADDED for RH
 
     for (unsigned int i=0; i < cleanedJets.size(); ++i){
       const pat::Jet& myjet = *(cleanedJets.at(i));  //RH
