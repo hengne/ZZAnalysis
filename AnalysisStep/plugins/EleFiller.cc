@@ -81,9 +81,8 @@ EleFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   InputTag theRhoTag = LeptonIsoHelper::getEleRhoTag(sampleType,setup);
   edm::Handle<double> rhoHandle;
-  //iEvent.getByLabel(theRhoTag, rhoHandle); //RH
-  //double rho = *rhoHandle;//RH
-  double rho =1.0;
+  iEvent.getByLabel(theRhoTag, rhoHandle); 
+  double rho = *rhoHandle;
 
   edm::Handle<vector<Vertex> >  vertexs;
   iEvent.getByLabel("goodPrimaryVertices",vertexs);

@@ -81,9 +81,9 @@ MuFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   InputTag theRhoTag = LeptonIsoHelper::getMuRhoTag(sampleType, setup);
   edm::Handle<double> rhoHandle;
-  //iEvent.getByLabel(theRhoTag, rhoHandle)//RH;
-  //double rho = *rhoHandle;//RH
-  double rho = 1.;
+  iEvent.getByLabel(theRhoTag, rhoHandle);//RH;
+  double rho = *rhoHandle;//RH
+  //double rho = 1.;
 
   edm::Handle<vector<Vertex> >  vertexs;
   iEvent.getByLabel("goodPrimaryVertices",vertexs);
