@@ -147,6 +147,7 @@ void HZZ4l::Loop(Int_t channelType, const TString outputName)
     else MC_weight_initial = xsecRead8TeV.getWeight(theSample, "1fb-1","all", true)/Nevt_norm;
 
     MC_weight_norm_initial = getNormalizedWeight(channelType);
+    cout<<"First cross checK - weight_interm="<<MC_weight_norm_initial<<" "<<theSample<<endl;
     if (MC_weight_norm_initial<0){
       cout << "ERROR: MC normalization negative " << MC_weight_norm_initial  << endl;
       abort();

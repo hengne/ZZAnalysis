@@ -36,9 +36,10 @@ MCHistoryTools::MCHistoryTools(const edm::Event & event, string sampleName) :
   isInit(false),
   theGenH(0) {
   //  if(event.getByLabel("genParticles", particles)){  // genParticles are not available in cmgTuple, only in PAT
-  if(event.getByLabel("genParticlesPruned", particles)){
+  //if(event.getByLabel("genParticlesPruned", particles)){
+  if(event.getByLabel("prunedGenParticles", particles)){
     ismc=true;
-    
+
     edm::Handle<GenEventInfoProduct> gen;
     event.getByLabel( "generator", gen );
     processID = gen->signalProcessID();
@@ -80,7 +81,6 @@ MCHistoryTools::MCHistoryTools(const edm::Event & event, string sampleName) :
       if (boost::starts_with(sampleName,"ZZZJets")) processID=900101;      
     }
     
-
 //   take the MC weight
       GenEventInfoProduct  genInfo = *(gen.product());
       hepMCweight = genInfo.weight();
@@ -184,12 +184,13 @@ MCHistoryTools::init() {
   for( View<Candidate>::const_iterator p = particles->begin(); p != particles->end(); ++ p ) {
     int id = abs(p->pdgId());
 
-
     if (dbg){
       if (id==13 || id==11 || id ==23 || id==25) {
 	cout << "Genpart: id " << id << " pt " << p->pt() << " eta " << p->eta() << " phi " << p->phi()
 	     << " status " << p->status()
 	     << " parent id " << (p->mother()!=0?p->mother()->pdgId():0)
+	     << " thegenh" <<  theGenH
+	  //<< "dau0"<<p->daughter(0)->pdgId()
 	  // << " vertex " << p->vertex()
 	     << endl;
       }
@@ -197,8 +198,9 @@ MCHistoryTools::init() {
 
     //--- H
     if (id==25) {
-      if (theGenH==0 || (p->daughter(0)->pdgId()==25)) { // Handle HH samples - genH will be the H decaying to ZZ in this case
-	theGenH = &*p;
+      if (theGenH==0 )theGenH = &*p;
+      if(p->daughter(0)){// Handle HH samples - genH will be the H decaying to ZZ in this case
+	if(p->daughter(0)->pdgId()==25)theGenH = &*p;
       }
 
     //--- Z
@@ -223,7 +225,6 @@ MCHistoryTools::init() {
 	// Can save these to a separate list of leptons from associated prod
 	continue;
       }
-      
       theGenLeps.push_back(&*p);
     }
   } // end loop on particles
@@ -253,7 +254,6 @@ MCHistoryTools::init() {
       abort();    
   }
   
-
   // Sort leptons, as done for the signal, for cases where we have 4.
   if (theGenLeps.size()==4) {
     const float ZmassValue = 91.1876;  
@@ -393,7 +393,6 @@ int
 MCHistoryTools::genFinalState(){
   if (!ismc) return -1;  
   init();
-  
   if (theGenH!=0 && theGenZ.size()!=2) {
     // cout << "ERROR: MCHistoryTools: genH!=0 but genZ.size()==" << theGenZ.size() << endl;
     if (abs(theGenH->daughter(0)->pdgId())<10) {
@@ -402,12 +401,10 @@ MCHistoryTools::genFinalState(){
       return BUGGY;
     }
   }
-
   int gen_finalState = NONE;  
   if (theGenZ.size()==2){
     int gen_Z1_flavour = abs(theGenZ[0]->daughter(0)->pdgId());
     int gen_Z2_flavour = abs(theGenZ[1]->daughter(0)->pdgId());
-
     // FIXME this does not make much sense now that we re-pair Zs in the MC history.
     if (gen_Z1_flavour == 11 && gen_Z2_flavour == 11) {
       gen_finalState = EEEE;
