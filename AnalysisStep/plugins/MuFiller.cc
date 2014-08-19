@@ -91,26 +91,9 @@ MuFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   // Output collection
   auto_ptr<pat::MuonCollection> result( new pat::MuonCollection() );
 
-  //FIXME: effective areas to be updated!
-  const float AreaEcal[2]    = {0.074, 0.045};   //   barrel/endcap
-  const float AreaHcal[2]    = {0.022, 0.030};   //   barrel/endcap
-
   for (unsigned int i = 0; i< muonHandle->size(); ++i){
     //---Clone the pat::Muon
     pat::Muon l(*((*muonHandle)[i].get()));
-
-    //--- Rho-corrected isolation and loose iso
-    float tkIso   = l.userIsolation(pat::User1Iso);
-    float ecalIso = l.ecalIso();
-    float hcalIso = l.hcalIso();
-    float feta = fabs(l.eta());
-    float pt = l.pt();
-
-    Int_t ifid = (feta < 1.479) ? 0 : 1;
-    ecalIso = ecalIso - AreaEcal[ifid]*rho;
-    hcalIso = hcalIso - AreaHcal[ifid]*rho;
-    
-    float combRelIso = (ecalIso + hcalIso + tkIso)/pt;
 
     //--- PF ISO
     float PFChargedHadIso   = l.chargedHadronIso();
@@ -118,23 +101,6 @@ MuFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     float PFPhotonIso       = l.photonIso();
     
     float combRelIsoPF = LeptonIsoHelper::combRelIsoPF(sampleType, setup, rho, l);
-
-    bool isGlb = l.isGlobalMuon();
-    bool isTk = l.isTrackerMuon();
-    
-    float mvaIsoRings = l.userFloat("mvaIsoRings");
-    bool isMvaIsoRings = false;
-    // "reference WP" from https://twiki.cern.ch/twiki/bin/view/CMS/MultivariateMuonSelection#Reference_Working_Point r15
-    if ((isGlb && isTk && pt < 10 && feta < 1.5   && mvaIsoRings > -0.593) ||
-	(isGlb && isTk && pt >= 10 && feta < 1.5  && mvaIsoRings > 0.337) ||
-	(isGlb && isTk && pt < 10 && feta >= 1.5  && mvaIsoRings > -0.767) ||
-	(isGlb && isTk && pt >= 10 && feta >= 1.5 && mvaIsoRings > 0.410) ||
-	(!isGlb && isTk                           && mvaIsoRings > -0.989) ||
-	(isGlb && !isTk                           && mvaIsoRings > -0.995)) {
-      isMvaIsoRings = true;
-    }
-    
-
 
     //--- SIP, dxy, dz
     float IP      = std::abs(l.dB(pat::Muon::PV3D));
@@ -161,14 +127,11 @@ MuFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     //FIXME
     
     //--- Embed user variables
-    l.addUserFloat("looseIso",tkIso/l.pt());
-    l.addUserFloat("combRelIso",combRelIso);
     l.addUserFloat("PFChargedHadIso",PFChargedHadIso);
     l.addUserFloat("PFNeutralHadIso",PFNeutralHadIso);
     l.addUserFloat("PFPhotonIso",PFPhotonIso);
     l.addUserFloat("combRelIsoPF",combRelIsoPF);
     l.addUserFloat("rho",rho);
-    l.addUserFloat("isMvaIsoRings", isMvaIsoRings);    
 
     //    if(vertexs->size()>0) {
     //      SIP=sipCalculator_->calculate(l,vertexs->front());
