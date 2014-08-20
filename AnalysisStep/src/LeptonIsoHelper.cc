@@ -7,7 +7,8 @@
 
 #include <ZZAnalysis/AnalysisStep/interface/LeptonIsoHelper.h>
 #include <Muon/MuonAnalysisTools/interface/MuonEffectiveArea.h>
-#include <EGamma/EGammaAnalysisTools/interface/ElectronEffectiveArea.h>
+//#include <EGamma/EGammaAnalysisTools/interface/ElectronEffectiveArea.h>
+#include <ZZAnalysis/AnalysisStep/interface/CustomElectronEffectiveArea.h>
 
 #include <iostream>
 
@@ -41,7 +42,7 @@ InputTag LeptonIsoHelper::getEleRhoTag(int sampleType, int setup) {
     rhoTag = InputTag("fixedGridRhoFastjetAll","");
   } else if (sampleType ==2012) {
     //rhoTag = InputTag("kt6PFJets","rho","RECO");
-    rhoTag = InputTag("fixedGridRhoFastjetAll","");
+    rhoTag = InputTag("fixedGridRhoFastjetAll",""); // or "fixedGridRhoFastjetCentralNeutral"? 
   } else {
     cout << "LeptonIsoHelper: Incorect setup: " << sampleType << endl;
     abort();
@@ -84,7 +85,8 @@ float LeptonIsoHelper::combRelIsoPF(int sampleType, int setup, double rho, const
   if (sampleType ==2011) {
     EAsetup = ElectronEffectiveArea::kEleEAData2011;
   } else if (sampleType ==2012) { 
-    EAsetup = ElectronEffectiveArea::kEleEAData2012;
+    EAsetup = ElectronEffectiveArea::kEleEAData2012; // Legacy
+    // EAsetup = ElectronEffectiveArea::kEleEASpring14MC_PU20bx25 // retuned by Simon
   } else {
     abort();
   }
