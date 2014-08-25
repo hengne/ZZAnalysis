@@ -45,7 +45,6 @@ try:
     APPLYMUCORR
 except NameError:
     APPLYMUCORR = True
-APPLYMUCORR = False
 
 
 #Mass used for SuperMELA
@@ -71,12 +70,16 @@ if (SAMPLE_TYPE == 2011) :
 else : 
     if IsMC:
 #        process.GlobalTag.globaltag = 'START53_V7G::All'   #for 53X MC
-        process.GlobalTag.globaltag = 'START53_V23::All'   #for 53X MC, updated JEC on top of pattuples produced with START53_V7G
+#        process.GlobalTag.globaltag = 'START53_V23::All'   #for 53X MC, updated JEC on top of pattuples produced with START53_V7G
+### Note: There is no effect of the GT on results, if ele regression/BDT is not recomputed.
+        process.GlobalTag.globaltag = 'PLS170_V6AN1::All'   # 70X GT for 50 ns, cf. https://twiki.cern.ch/twiki/bin/view/CMS/MiniAOD
+#        process.GlobalTag.globaltag = 'PLS170_V7AN1::All'  # 70X GT for 25 ns, cf. https://twiki.cern.ch/twiki/bin/view/CMS/MiniAOD
+        
     else:
 #        process.GlobalTag.globaltag = 'FT_53_V21_AN3::All' # For 22Jan2013
-        process.GlobalTag.globaltag = 'FT_53_V21_AN4::All' # For 22Jan2013, updated JEC on top of pattuples produced with FT_53_V21_AN3
+#        process.GlobalTag.globaltag = 'FT_53_V21_AN4::All' # For 22Jan2013, updated JEC on top of pattuples produced with FT_53_V21_AN3
+        process.GlobalTag.globaltag = 'GR_70_V2_AN1::All'   # data in 70X, cf https://twiki.cern.ch/twiki/bin/view/CMS/MiniAOD
 
-process.GlobalTag.globaltag = 'PLS170_V6AN1'
 print process.GlobalTag.globaltag
 
 ### ----------------------------------------------------------------------
@@ -251,14 +254,9 @@ else:
 ### Mu Ghost cleaning
 process.cleanedMu = cms.EDProducer("PATMuonCleanerBySegments",
                                    src = cms.InputTag("calibratedMuons"),
-                                   #src = cms.InputTag("slimmedMuons"),
                                    preselection = cms.string("track.isNonnull"),
                                    passthrough = cms.string("isGlobalMuon && numberOfMatches >= 2"),
                                    fractionOfSharedSegments = cms.double(0.499))
-
-if APPLYMUCORR == False :
-    process.cleanedMu.src = cms.InputTag("slimmedMuons")#patMuonsWithTrigger")
-
 
 
 process.bareSoftMuons = cms.EDFilter("PATMuonRefSelector",
@@ -425,13 +423,12 @@ process.cleanSoftElectrons = cms.EDProducer("PATElectronCleaner",
 ### ----------------------------------------------------------------------
 ### Search for FSR candidates
 ### ----------------------------------------------------------------------
-#RH
-#process.appendPhotons = cms.EDProducer("LeptonPhotonMatcher",
-#    muonSrc = cms.InputTag("softMuons"),
-#    electronSrc = cms.InputTag("cleanSoftElectrons"),
-#    photonSrc = cms.InputTag("cmgPhotonSel"),
-#    matchFSR = cms.bool(True)
-#    )
+process.appendPhotons = cms.EDProducer("LeptonPhotonMatcher",
+    muonSrc = cms.InputTag("softMuons"),
+    electronSrc = cms.InputTag("cleanSoftElectrons"),
+    photonSrc = cms.InputTag("cmgPhotonSel"),
+    matchFSR = cms.bool(True)
+    )
 
 
 
@@ -979,7 +976,7 @@ process.LLLLCand = cms.EDProducer("ZZCandidateFiller",
 ### Recorrect jets
 ### ----------------------------------------------------------------------
 
-UPDATE_JETS = False 
+UPDATE_JETS = False #RH
 
 if (UPDATE_JETS and LEPTON_SETUP==2012) :
 #    from CMGTools.Common.miscProducers.cmgPFJetCorrector_cfi import cmgPFJetCorrector

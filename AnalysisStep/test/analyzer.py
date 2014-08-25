@@ -3,27 +3,7 @@
 ### Example analayzer
 ###
 ###----------------------------------------------------------------------
-import FWCore.ParameterSet.Config as cms
 
-LEPTON_SETUP = 2012
-
-ELECORRTYPE   = "None" # "None", "Moriond", or "Paper"
-ELEREGRESSION = "None" # "None", "Moriond", "PaperNoComb", or "Paper" 
-APPLYMUCORR = False
-
-process = cms.Process('PAT')
-
-# import of standard configurations
-process.load('Configuration.StandardSequences.Services_cff')
-process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
-process.load('FWCore.MessageService.MessageLogger_cfi')
-process.load('FastSimulation.Configuration.EventContent_cff')
-process.load('FastSimulation.PileUpProducer.PileUpSimulator_NoPileUp_cff')
-process.load('FastSimulation.Configuration.Geometries_MC_cff')
-process.load('Configuration.StandardSequences.MagneticField_38T_cff')
-process.load('Configuration.StandardSequences.PATMC_cff')
-process.load('Configuration.StandardSequences.EndOfProcess_cff')
-process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 try:
     IsMC
@@ -63,8 +43,9 @@ execfile(PyFilePath + "MasterPy/ZZ4lAnalysis.py")         # 2012 reference analy
 ### ----------------------------------------------------------------------
 process.source.fileNames = cms.untracked.vstring(
 
-#'/store/cmst3/user/gpetrucc/miniAOD/v1/GluGluToHToZZTo4L_M-125_13TeV-powheg-pythia6_PU_S14_PAT.root'
-'/store/cmst3/user/gpetrucc/miniAOD/v1/GluGluToHToZZTo4L_M-125_13TeV-powheg-pythia6_PU_S14_PAT_big.root'
+#        'root://cmsphys05//data/b/botta/V5_2_0/cmgTuple_H120Fall11_noSmearing.root' #Fall11 H120 for May, 21 synch exercise
+#        'root://cmsphys05//data/b/botta/V5_4_0/cmgTuple_H120Fall11_noSmearing.root' #Fall11 H120 for FSR synch
+         'root://cmsphys05//data/b/botta/V5_4_0/cmgTuple_H126Summer12.root' #Summer12 H126 for FSR synch        
     )
 
 
@@ -295,7 +276,7 @@ process.dumpUserData =  cms.EDAnalyzer("dumpUserData",
      candidateSrcs = cms.PSet(
         Zmm   = cms.InputTag("MMCand"),
         Zee   = cms.InputTag("EECand"),
-        Z    = cms.InputTag("ZCand"),
+#        Z     = cms.InputTag("ZCand"),
         MMMM  = cms.InputTag("MMMMCand"),
         EEEE  = cms.InputTag("EEEECand"),
         EEMM  = cms.InputTag("EEMMCand"),
