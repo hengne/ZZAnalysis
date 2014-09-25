@@ -423,10 +423,11 @@ process.cleanSoftElectrons = cms.EDProducer("PATElectronCleaner",
 ### ----------------------------------------------------------------------
 ### Search for FSR candidates
 ### ----------------------------------------------------------------------
+process.load("UFHZZAnalysisRun2.FSRPhotons.fsrPhotons_cff")
 process.appendPhotons = cms.EDProducer("LeptonPhotonMatcher",
     muonSrc = cms.InputTag("softMuons"),
     electronSrc = cms.InputTag("cleanSoftElectrons"),
-    photonSrc = cms.InputTag("cmgPhotonSel"),
+    photonSrc = cms.InputTag("boostedFsrPhotons"),#cms.InputTag("cmgPhotonSel"),
     matchFSR = cms.bool(True)
     )
 
@@ -436,8 +437,8 @@ process.appendPhotons = cms.EDProducer("LeptonPhotonMatcher",
 # CAVEAT: merging creates copies of the objects, so that CandViewShallowCloneCombiner is not able to find 
 # overlaps between merged collections and the original ones.
 process.softLeptons = cms.EDProducer("CandViewMerger",
-    src = cms.VInputTag(cms.InputTag("softMuons"), cms.InputTag("cleanSoftElectrons"))
-#    src = cms.VInputTag(cms.InputTag("appendPhotons:muons"), cms.InputTag("appendPhotons:electrons"))#RH
+#    src = cms.VInputTag(cms.InputTag("softMuons"), cms.InputTag("cleanSoftElectrons"))
+    src = cms.VInputTag(cms.InputTag("appendPhotons:muons"), cms.InputTag("appendPhotons:electrons"))#RH
 )
 
 
@@ -468,8 +469,8 @@ Z1PRESEL    = (ZLEPTONSEL + " && mass > 40 && mass < 120") # FIXME
 
 # e+e-
 process.bareEECand = cms.EDProducer("CandViewShallowCloneCombiner",
-    decay = cms.string('cleanSoftElectrons@+ cleanSoftElectrons@-'),
-#    decay = cms.string('appendPhotons:electrons@+ appendPhotons:electrons@-'), #RH
+#    decay = cms.string('cleanSoftElectrons@+ cleanSoftElectrons@-'),
+    decay = cms.string('appendPhotons:electrons@+ appendPhotons:electrons@-'), #RH
     cut = cms.string('mass > 0'), # protect against ghosts
     checkCharge = cms.bool(True)
 )
@@ -487,8 +488,8 @@ process.EECand = cms.EDProducer("ZCandidateFiller",
 
 # mu+mu-
 process.bareMMCand = cms.EDProducer("CandViewShallowCloneCombiner",
-    decay = cms.string('softMuons@+ softMuons@-'),
-#    decay = cms.string('appendPhotons:muons@+ appendPhotons:muons@-'), #RH
+#    decay = cms.string('softMuons@+ softMuons@-'),
+    decay = cms.string('appendPhotons:muons@+ appendPhotons:muons@-'), #RH
     cut = cms.string('mass > 0'), # protect against ghosts
     checkCharge = cms.bool(True)
 )
@@ -1006,7 +1007,7 @@ process.PVfilter =  cms.Path(process.goodPrimaryVertices)
 process.Candidates = cms.Path(
        process.muons             +
        process.electrons         + process.cleanSoftElectrons +
-#       process.appendPhotons     +#RH
+       process.fsrPhotonSequence + process.appendPhotons     +#RH
        process.softLeptons       +
 # Build 4-lepton candidates
        process.bareEECand        + process.EECand   +  

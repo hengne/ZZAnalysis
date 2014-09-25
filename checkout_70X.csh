@@ -25,6 +25,10 @@ git clone https://github.com/cms-analysis/HiggsAnalysis-ZZMatrixElement.git ZZMa
 git clone https://github.com/usarica/HiggsAnalysis-CombinedLimit HiggsAnalysis/CombinedLimit
 (cd HiggsAnalysis/CombinedLimit ; git checkout US_slc6root53417)
 
+#photon ISO information for FSR 
+git clone -n https://github.com/VBF-HZZ/UFHZZAnalysisRun2
+(cd UFHZZAnalysisRun2 ; git checkout master FSRPhotons)
+
 #Not needed anymore (dependency removed)
 #git clone https://github.com/HZZ4l/CombinationPy.git HZZ4L_Combination/CombinationPy
 
