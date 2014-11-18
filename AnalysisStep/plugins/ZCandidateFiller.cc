@@ -21,7 +21,7 @@
 //#include <DataFormats/Candidate/interface/ShallowCloneCandidate.h>
 //#include <DataFormats/PatCandidates/interface/Muon.h>
 //#include <DataFormats/PatCandidates/interface/Electron.h>
-//#include <ZZAnalysis/AnalysisStep/interface/PhotonFwd.h>
+#include <ZZAnalysis/AnalysisStep/interface/PhotonFwd.h>
 
 #include <ZZAnalysis/AnalysisStep/interface/CutSet.h>
 #include <ZZAnalysis/AnalysisStep/interface/LeptonIsoHelper.h>
@@ -77,7 +77,7 @@ ZCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   Handle<View<reco::CompositeCandidate> > LLCands;
   iEvent.getByLabel(theCandidateTag, LLCands);
 
-//#define USE_FSR
+#define USE_FSR
 #ifdef USE_FSR
   // Get rho, to recompute isolation for leptons with FSR 
   double rhoForMu, rhoForEle;
@@ -128,8 +128,8 @@ ZCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     // the highest-pT and the lowest-DR assocated gamma.
     double    maxPT = -1.;
     double    minDR = 9999.;
-    const cmg::Photon* maxPTg=0;
-    const cmg::Photon* minDRg=0;
+    const pat::PFParticle* maxPTg=0;
+    const pat::PFParticle* minDRg=0;
     int maxPTgLep=-1; // Index of daughter to which the above photons
     int minDRgLep=-1; // are associated
 
@@ -139,7 +139,7 @@ ZCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       if (gammas==0) continue;
       for (PhotonPtrVector::const_iterator g = gammas->begin();
 	   g!= gammas->end(); ++g) {
-	const cmg::Photon* gamma = g->get();
+	const pat::PFParticle* gamma = g->get();
 	reco::Candidate::LorentzVector p4G = gamma->p4();
 	reco::Candidate::LorentzVector p4LL = myCand.p4();
 	double mLLG = (p4LL + p4G).M();
@@ -168,7 +168,7 @@ ZCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
     } // end loop on daughters (leptons)
     
     // Define the selected FSR photon.
-    const cmg::Photon* fsr=0;    
+    const pat::PFParticle* fsr=0;    
     int lepWithFsr=-1; 
     if (maxPTg!=0) { // at least 1 photon selected
       if (maxPT>4) { // First case: take highest-pT
@@ -187,7 +187,7 @@ ZCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       myCand.addUserFloat("mll",myCand.mass()); // for debug purposes
       myCand.setP4(myCand.p4()+fsr->p4());
 //      myCand.addDaughter(reco::ShallowCloneCandidate(fsr->masterClone()),"FSR"); //FIXME: fsr does not have a masterClone
-      cmg::Photon myFsr(*fsr);
+      pat::PFParticle myFsr(*fsr);
       myFsr.setPdgId(22); // Fix: photons that are isFromMu have abs(pdgId)=13!!!
       myCand.addDaughter(myFsr,"FSR");
     }
@@ -197,13 +197,13 @@ ZCandidateFiller::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
       const Candidate* d = myCand.daughter(dauIdx);
       float fsrCorr = 0; // The correction to PFPhotonIso
       if (fsr!=0) {
-	if (!fsr->isFromMuon()) { // Type 1 photons should be subtracted from muon iso cones
+	//if (!fsr->isFromMuon()) { // Type 1 photons should be subtracted from muon iso cones
 	  double dR = ROOT::Math::VectorUtil::DeltaR(fsr->momentum(),d->momentum());
 	  if (dR<0.4 && ((d->isMuon() && dR > 0.01) ||
 			 (d->isElectron() && (fabs((static_cast<const pat::Electron*>(d->masterClone().get()))->superCluster()->eta()) < 1.479 || dR > 0.08)))) {
 	    fsrCorr = fsr->pt();
 	  }
-	}
+	  //}
       }
 
       float rho = ((d->isMuon())?rhoForMu:rhoForEle);

@@ -12,7 +12,7 @@
 
 
 #include <DataFormats/PatCandidates/interface/CompositeCandidate.h>
-//#include <ZZAnalysis/AnalysisStep/interface/PhotonFwd.h>
+#include <ZZAnalysis/AnalysisStep/interface/PhotonFwd.h>
 
 #include <string>
 #include <vector>
@@ -25,7 +25,7 @@ namespace userdatahelpers {
   float getUserFloat(const reco::Candidate* c, const char* name);
 
   /// Retrieve matched photons stored as userData
-  //const PhotonPtrVector* getUserPhotons(const reco::Candidate* c);
+  const PhotonPtrVector* getUserPhotons(const reco::Candidate* c);
 
   /// Add the userFloats of daughters into cand, with proper prefix 
   void embedDaughterData(pat::CompositeCandidate& cand);
