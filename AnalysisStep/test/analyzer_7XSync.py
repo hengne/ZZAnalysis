@@ -33,15 +33,15 @@ process.source.fileNames = cms.untracked.vstring(
 
     #'root://cms-xrd-global.cern.ch//store/mc/Phys14DR/ZZTo4L_Tune4C_13TeV-powheg-pythia8/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/04CD96C9-E269-E411-9D64-00266CF9ADA0.root',
 
-    '/store/mc/Phys14DR/GluGluToHToZZTo4L_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/3295EF7C-2070-E411-89C4-7845C4FC35DB.root' # Official sync file for signal
+#    '/store/mc/Phys14DR/GluGluToHToZZTo4L_M-125_13TeV-powheg-pythia6/MINIAODSIM/PU20bx25_tsg_PHYS14_25_V1-v1/00000/3295EF7C-2070-E411-89C4-7845C4FC35DB.root' # Official sync file for signal
 
 #    'file:/afs/cern.ch/user/g/gortona/work/public/miniAODPhys14/DYJetsToLL_M-50_13TeV_3leptons.root' # Official sync file for CR
 
-#     '/store/cmst3/group/susy/gpetrucc/13TeV/Phys14DR/MINIAODSIM/ggH_JHU_125/ggH_JHU_125.MINIAODSIM00.root',
-#     '/store/cmst3/group/susy/gpetrucc/13TeV/Phys14DR/MINIAODSIM/VBF_JHU_125/VBF_JHU_125.MINIAODSIM00.root',
-#     '/store/cmst3/group/susy/gpetrucc/13TeV/Phys14DR/MINIAODSIM/WminusH_JHU_125/WminusH_JHU_125.MINIAODSIM00.root',
-#     '/store/cmst3/group/susy/gpetrucc/13TeV/Phys14DR/MINIAODSIM/ZH_JHU_125/ZH_JHU_125.MINIAODSIM00.root',
-#     '/store/cmst3/group/susy/gpetrucc/13TeV/Phys14DR/MINIAODSIM/ttH_JHU_125/ttH_JHU_125.MINIAODSIM00.root',
+     '/store/cmst3/group/susy/gpetrucc/13TeV/Phys14DR/MINIAODSIM/ggH_JHU_125/ggH_JHU_125.MINIAODSIM00.root',
+     '/store/cmst3/group/susy/gpetrucc/13TeV/Phys14DR/MINIAODSIM/VBF_JHU_125/VBF_JHU_125.MINIAODSIM00.root',
+     '/store/cmst3/group/susy/gpetrucc/13TeV/Phys14DR/MINIAODSIM/WminusH_JHU_125/WminusH_JHU_125.MINIAODSIM00.root',
+     '/store/cmst3/group/susy/gpetrucc/13TeV/Phys14DR/MINIAODSIM/ZH_JHU_125/ZH_JHU_125.MINIAODSIM00.root',
+     '/store/cmst3/group/susy/gpetrucc/13TeV/Phys14DR/MINIAODSIM/ttH_JHU_125/ttH_JHU_125.MINIAODSIM00.root',
     )
 
 
@@ -54,6 +54,9 @@ process.maxEvents.input = -1
 # Silence output
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+
+process.TFileService.fileName=cms.string('ZZ4lAnalysis_ct.root')
+                                
 
 
 ### ----------------------------------------------------------------------
@@ -84,8 +87,8 @@ process.dumpUserData =  cms.EDAnalyzer("dumpUserData",
 process.PlotsZZ.dumpForSync = True;
 
 # Also process CRs
-#process.CRPath = cms.Path(process.CR)
-#process.CRtrees = cms.EndPath(process.CRZLLTree + process.CRZLTree)
+process.CRPath = cms.Path(process.CR)
+process.CRtrees = cms.EndPath(process.CRZLLTree + process.CRZLTree)
 
 # replace the paths in analyzer.py
 process.p = cms.EndPath( process.PlotsZZ)

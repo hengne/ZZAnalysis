@@ -99,6 +99,7 @@ def loop():
             lumi        = tree.LumiNumber
             event       = tree.EventNumber
 
+
             theEvent = Event(iBC,run,lumi,event)
 
             if iBC>=0 and ZZsel[iBC]>=90 :
@@ -141,11 +142,22 @@ def loop():
                         jets30eta.append(jeteta[i])
                         jets30phi.append(jetphi[i])
                         jets30mass.append(jetmass[i])
-                    
+                 
+                # debug   
+                print "lumi=",lumi," event=",event," nJets=",len(jets30pt)," nBtags=",njets30Btag 
+
                 theKDs = KDs(p0plus_VAJHU,p0minus_VAJHU,p0hplus_VAJHU,p1plus_VAJHU,p1_VAJHU,p2_VAJHU,p2qqb_VAJHU,bkg_VAMCFM)
                 theCand = Candidate(theEvent,mass4l,mZ1,mZ2,massErrRaw,massErrCorr,pt4l,nExtraLep,jets30pt,jets30eta,jets30phi,jets30mass,njets30Btag,mjj,detajj,theKDs)
                 cands.append(theCand)
 
+            #check particular particles
+            if ((theEvent.lumi==894701 and theEvent.event==721) or
+                (theEvent.lumi==894700 and theEvent.event==1954) or
+                (theEvent.lumi==894701 and theEvent.event==1983) or
+                (theEvent.lumi==895751 and theEvent.event==2130)):
+                aline = theCand.eventInfo.printOut()+":"+theCand.printOut()+"\n"
+                print aline
+ 
 
 
     # Sort candidates on a event number basis
